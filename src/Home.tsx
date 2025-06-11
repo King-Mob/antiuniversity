@@ -21,7 +21,7 @@ function Home({ venues, events }: { venues: venue[]; events: event[] }) {
                         ))}
                         <h2>Events:</h2>
                         {events.map((event) => (
-                            <div>
+                            <div className="event">
                                 <h3>{event.name}</h3>
                                 <p>Description: {event.description}</p>
                             </div>

@@ -100,6 +100,18 @@ export function CreateEvent({
         }
     }
 
+    const time = new Date()
+        .toLocaleString("en-GB", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+        })
+        .replace(" ", "T");
+    console.log(time);
+
     return (
         <div>
             <h1>New Event</h1>
@@ -134,20 +146,27 @@ export function CreateEvent({
                             <option value={venue.id}>{venue.name}</option>
                         ))}
                     </select>
-                    <input
+                    {/**
+                     * <input
                         type="datetime-local"
-                        value={startTime.toISOString().replace("Z", "")}
+                        value={startTime.toString()}
                         onChange={(e) => {
                             console.log(e.target.value);
+
                             // add one hour when setting start time
+                            // not quite sure what the issue is, suspect its time zone related
+                            // which means BST problem
                             setStartTime(new Date(e.target.value));
                         }}
                     ></input>
                     <input
                         type="datetime-local"
-                        value={endTime.toISOString().replace("Z", "")}
+                        value={endTime.toString()}
                         onChange={(e) => setEndTime(new Date(e.target.value))}
                     ></input>
+                     * 
+                     */}
+                    <p>Start time and end time to come, just fixing timezone bug </p>
                     <button onClick={create}>Create</button>
                 </>
             )}
