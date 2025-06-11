@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router";
 import { postVenue, postEvent } from "./requests";
 import { type venue, type event } from "./types";
 
@@ -25,6 +26,9 @@ export function CreateVenue({ venues, loadEvents }: { venues: venue[]; loadEvent
 
     return (
         <div>
+            <Link to="/">
+                <h2>Back</h2>
+            </Link>
             <h1>New Venue</h1>
             {created ? (
                 <>
@@ -114,6 +118,9 @@ export function CreateEvent({
 
     return (
         <div>
+            <Link to="/">
+                <h2>Back</h2>
+            </Link>
             <h1>New Event</h1>
             {created ? (
                 <>

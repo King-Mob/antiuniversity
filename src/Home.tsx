@@ -11,6 +11,14 @@ function Home({ venues, events }: { venues: venue[]; events: event[] }) {
             {VITE_SUBMISSIONS_OPEN ? (
                 <div>
                     <div>
+                        <Link to="/new/venue">
+                            <h2>Create venue</h2>
+                        </Link>
+                        <Link to="/new/event">
+                            <h2>Create event</h2>
+                        </Link>
+                    </div>
+                    <div>
                         <h2>Venues:</h2>
                         {venues.map((venue) => (
                             <div className="venue">
@@ -26,14 +34,6 @@ function Home({ venues, events }: { venues: venue[]; events: event[] }) {
                                 <p>Description: {event.description}</p>
                             </div>
                         ))}
-                    </div>
-                    <div>
-                        <Link to="/new/venue">
-                            <h2>Create venue</h2>
-                        </Link>
-                        <Link to="/new/event">
-                            <h2>Create event</h2>
-                        </Link>
                     </div>
                 </div>
             ) : (
