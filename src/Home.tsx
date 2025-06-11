@@ -10,31 +10,27 @@ function Home({ venues, events }: { venues: venue[]; events: event[] }) {
             <h1>AntiUniversity Submissions</h1>
             {VITE_SUBMISSIONS_OPEN ? (
                 <div>
-                    <div>
-                        <Link to="/new/venue">
-                            <h2>Create venue</h2>
-                        </Link>
-                        <Link to="/new/event">
-                            <h2>Create event</h2>
-                        </Link>
-                    </div>
-                    <div>
-                        <h2>Venues:</h2>
-                        {venues.map((venue) => (
-                            <div className="venue">
-                                <h3>{venue.name}</h3>
-                                <p>Description: {venue.description}</p>
-                                <p>Address: {venue.address}</p>
-                            </div>
-                        ))}
-                        <h2>Events:</h2>
-                        {events.map((event) => (
-                            <div className="event">
-                                <h3>{event.name}</h3>
-                                <p>Description: {event.description}</p>
-                            </div>
-                        ))}
-                    </div>
+                    <h2>Venues:</h2>
+                    {venues.map((venue) => (
+                        <div className="venue">
+                            <h3>{venue.name}</h3>
+                            <p>Description: {venue.description}</p>
+                            <p>Address: {venue.address}</p>
+                        </div>
+                    ))}
+                    <Link to="/new/venue">
+                        <h2>Create venue</h2>
+                    </Link>
+                    <h2>Events:</h2>
+                    {events.map((event) => (
+                        <div className="event">
+                            <h3>{event.name}</h3>
+                            <p>Description: {event.description}</p>
+                        </div>
+                    ))}
+                    <Link to="/new/event">
+                        <h2>Create event</h2>
+                    </Link>
                 </div>
             ) : (
                 <h2>Coming soon!</h2>
