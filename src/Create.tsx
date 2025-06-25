@@ -1,26 +1,40 @@
 import { useState } from "react";
 import { Link } from "react-router";
 import { postVenue, postEvent } from "./requests";
-import { type venue, type event } from "./types";
+import { type venue, type event, type user } from "./types";
 
-export function CreateVenue({ venues, loadEvents }: { venues: venue[]; loadEvents: () => void }) {
+export function CreateVenue({
+    venues,
+    loadEvents,
+    user,
+}: {
+    venues: venue[];
+    loadEvents: () => void;
+    user: user | undefined;
+}) {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [address, setAddress] = useState("");
     const [created, setCreated] = useState(false);
 
     async function create() {
-        const response = await postVenue({
-            name,
-            description,
-            address,
-        });
-        if (response) {
-            setCreated(true);
-            setName("");
-            setDescription("");
-            setAddress("");
-            loadEvents();
+        if (user) {
+            const response = await postVenue(
+                {
+                    name,
+                    description,
+                    address,
+                    creator: user.name,
+                },
+                user.access_token
+            );
+            if (response) {
+                setCreated(true);
+                setName("");
+                setDescription("");
+                setAddress("");
+                loadEvents();
+            }
         }
     }
 
@@ -73,10 +87,12 @@ export function CreateEvent({
     venues,
     events,
     loadEvents,
+    user,
 }: {
     venues: venue[];
     events: event[];
     loadEvents: () => void;
+    user: user | undefined;
 }) {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
@@ -86,21 +102,27 @@ export function CreateEvent({
     const [created, setCreated] = useState(false);
 
     async function create() {
-        const response = await postEvent({
-            name,
-            description,
-            venueId,
-            startTime,
-            endTime,
-        });
-        if (response) {
-            setName("");
-            setDescription("");
-            setVenueId("");
-            setStartTime(new Date());
-            setEndTime(new Date());
-            setCreated(true);
-            loadEvents();
+        if (user) {
+            const response = await postEvent(
+                {
+                    name,
+                    description,
+                    venueId,
+                    startTime,
+                    endTime,
+                    creator: user.name,
+                },
+                user.access_token
+            );
+            if (response) {
+                setName("");
+                setDescription("");
+                setVenueId("");
+                setStartTime(new Date());
+                setEndTime(new Date());
+                setCreated(true);
+                loadEvents();
+            }
         }
     }
 
