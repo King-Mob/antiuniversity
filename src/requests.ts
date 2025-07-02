@@ -1,6 +1,6 @@
 import { type newVenue, type newEvent, VENUE_EVENT, EVENT_EVENT, EVENT_UPDATED_EVENT } from "./types";
 
-const { VITE_MATRIX_TOKEN, VITE_HOMESERVER, VITE_ROOM_ID } = import.meta.env;
+const { VITE_MATRIX_TOKEN, VITE_HOMESERVER, VITE_ROOM_ID, VITE_REGISTRATION_TOKEN } = import.meta.env;
 
 export const getEvents = async () => {
     const eventsResponse = await fetch(
@@ -90,3 +90,64 @@ export const redactEvent = async (eventId: string, token: string, reason = "dele
     const redactResult = await redactResponse.json();
     return redactResult;
 };
+
+export const getUsernameAvailable = async (username: string) => {
+    const availableResponse = await fetch(`${VITE_HOMESERVER}/_matrix/client/v3/register/available?username=${username}`);
+
+    const availableResult = await availableResponse.json();
+    return availableResult;
+}
+
+export const postRegister = async (username: string, password: string) => {
+    const sessionResponse = await fetch(`${VITE_HOMESERVER}/_matrix/client/v3/register?kind=user`, {
+        method: "POST",
+        body: JSON.stringify({})
+    });
+    const sessionResult = await sessionResponse.json();
+
+    await fetch(`${VITE_HOMESERVER}/_matrix/client/v3/register?kind=user`, {
+        method: "POST",
+        body: JSON.stringify({
+            auth: {
+                type: "m.login.registration_token",
+                token: VITE_REGISTRATION_TOKEN,
+                session: sessionResult.session
+            }
+        })
+    });
+
+    const dummyResponse = await fetch(`${VITE_HOMESERVER}/_matrix/client/v3/register?kind=user`, {
+        method: "POST",
+        body: JSON.stringify({
+            device_id: "web-client" + Math.random(),
+            initial_device_display_name: "Booking website",
+            password: password,
+            username: username,
+            auth: {
+                "type": "m.login.dummy",
+                session: sessionResult.session
+            }
+        })
+    })
+    const dummyResult = await dummyResponse.json();
+    return dummyResult;
+}
+
+export const joinRoom = async (username: string, access_token: string) => {
+    await fetch(`${VITE_HOMESERVER}/_matrix/client/v3/rooms/${VITE_ROOM_ID}/invite`, {
+        method: "POST",
+        body: JSON.stringify({
+            user_id: `@${username}:spacetu.be`
+        }),
+        headers: {
+            Authorization: `Bearer ${VITE_MATRIX_TOKEN}`
+        }
+    })
+
+    await fetch(`${VITE_HOMESERVER}/_matrix/client/v3/join/${VITE_ROOM_ID}`, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${access_token}`
+        }
+    })
+}

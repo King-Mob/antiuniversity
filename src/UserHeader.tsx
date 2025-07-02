@@ -1,72 +1,147 @@
-//import { Link } from "react-router";
+import { Link } from "react-router";
 import { useState } from "react";
 import { type user } from "./types";
-import { postLogin } from "./requests";
+import {
+  postLogin,
+  getUsernameAvailable,
+  postRegister,
+  joinRoom,
+} from "./requests";
 
-function UserHeader({ user, setUser }: { user: user | undefined; setUser: (user: user | undefined) => void }) {
-    const [login, setLogin] = useState(false);
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+function UserHeader({
+  user,
+  setUser,
+}: {
+  user: user | undefined;
+  setUser: (user: user | undefined) => void;
+}) {
+  const [login, setLogin] = useState(false);
+  const [register, setRegister] = useState(false);
+  const [registrationLoading, setRegistrationLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-    async function tryLogin() {
-        const loginResponse = await postLogin(username, password);
-        if (loginResponse.access_token) {
-            setUser({
-                name: username,
-                access_token: loginResponse.access_token,
-            });
-            localStorage.setItem(
-                "antiuniversity.login.details",
-                JSON.stringify({ name: username, access_token: loginResponse.access_token })
-            );
-        }
+  async function tryLogin() {
+    const loginResponse = await postLogin(username, password);
+    if (loginResponse.access_token) {
+      setUser({
+        name: username,
+        access_token: loginResponse.access_token,
+      });
+      localStorage.setItem(
+        "antiuniversity.login.details",
+        JSON.stringify({
+          name: username,
+          access_token: loginResponse.access_token,
+        })
+      );
+      setError("");
+    } else {
+      setError("Login failed");
     }
+  }
 
-    function logOut() {
-        setUser(undefined);
-        localStorage.removeItem("antiuniversity.login.details");
+  async function tryRegister() {
+    setRegistrationLoading(true);
+    const usernameAvailable = await getUsernameAvailable(username);
+    if (!usernameAvailable.available) {
+      setRegistrationLoading(false);
+      setError("Couldn't register, chosen username is not available");
+    } else {
+      const registration = await postRegister(username, password);
+      if (registration.access_token) {
+        setUser({
+          name: username,
+          access_token: registration.access_token,
+        });
+        localStorage.setItem(
+          "antiuniversity.login.details",
+          JSON.stringify({
+            name: username,
+            access_token: registration.access_token,
+          })
+        );
+        joinRoom(username, registration.access_token);
+      }
     }
+  }
 
-    return (
-        <div>
-            {user ? (
-                <>
-                    <p>Logged in as {user.name}</p>
-                    <button onClick={logOut}>Log out</button>
-                </>
-            ) : login ? (
-                <>
-                    <p>username: antiuniversity.test.new</p>
-                    <p>password: letstestourfeatures</p>
-                    <input
-                        type="text"
-                        placeholder="username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    ></input>
-                    <input
-                        type="text"
-                        placeholder="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    ></input>
-                    <button disabled={username.length < 1 || password.length < 1} onClick={tryLogin}>
-                        {" "}
-                        Login
-                    </button>
-                </>
-            ) : (
-                <>
-                    {/*
-                <Link to="/register">
-                        <button>Register</button>
-                    </Link>
-                */}
-                    <button onClick={() => setLogin(true)}>Log in</button>
-                </>
-            )}
+  function logOut() {
+    setUser(undefined);
+    setLogin(false);
+    setRegister(false);
+    localStorage.removeItem("antiuniversity.login.details");
+  }
+
+  return (
+    <div>
+      {user ? (
+        <>
+          <p>
+            Logged in as <Link to={`/user/${user.name}`}>{user.name}</Link>
+          </p>
+          <button onClick={logOut}>Log out</button>
+        </>
+      ) : register ? (
+        registrationLoading ? (
+          <>
+            <p>Registration in progress...</p>
+          </>
+        ) : (
+          <>
+            <input
+              type="text"
+              placeholder="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            ></input>
+            <input
+              type="text"
+              placeholder="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            ></input>
+            <button
+              disabled={username.length < 1 || password.length < 1}
+              onClick={tryRegister}
+            >
+              {" "}
+              Register
+            </button>
+          </>
+        )
+      ) : login ? (
+        <>
+          <input
+            type="text"
+            placeholder="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          ></input>
+          <input
+            type="text"
+            placeholder="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          ></input>
+          <button
+            disabled={username.length < 1 || password.length < 1}
+            onClick={tryLogin}
+          >
+            {" "}
+            Login
+          </button>
+        </>
+      ) : (
+        <div id="user-button-container">
+          <button onClick={() => setRegister(true)}>Register</button>
+          <button onClick={() => setLogin(true)}>Log in</button>
         </div>
-    );
+      )}
+      {error && <p>{error}</p>}
+    </div>
+  );
 }
 
 export default UserHeader;
