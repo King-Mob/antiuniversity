@@ -47,7 +47,7 @@ function UserHeader({
     const usernameAvailable = await getUsernameAvailable(username);
     if (!usernameAvailable.available) {
       setRegistrationLoading(false);
-      setError("Couldn't register, chosen username is not available");
+      setError(usernameAvailable.error);
     } else {
       const registration = await postRegister(username, password);
       if (registration.access_token) {
@@ -97,11 +97,12 @@ function UserHeader({
               onChange={(e) => setUsername(e.target.value)}
             ></input>
             <input
-              type="text"
+              type="password"
               placeholder="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             ></input>
+            <br />
             <button
               disabled={username.length < 1 || password.length < 1}
               onClick={tryRegister}
@@ -120,11 +121,12 @@ function UserHeader({
             onChange={(e) => setUsername(e.target.value)}
           ></input>
           <input
-            type="text"
+            type="password"
             placeholder="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           ></input>
+          <br />
           <button
             disabled={username.length < 1 || password.length < 1}
             onClick={tryLogin}
