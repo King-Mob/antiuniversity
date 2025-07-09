@@ -4,7 +4,7 @@ export type newVenue = {
     address: string;
     creator: string;
     capacity: number;
-    slotsAvailable: Date[];
+    slotsAvailable: number[];
 };
 
 export type venue = newVenue & {
@@ -15,7 +15,7 @@ export type newEvent = {
     venueId: string;
     name: string;
     description: string;
-    slotsUsed: Date[];
+    slotsUsed: number[];
     creator: string;
     published: boolean;
     approved: boolean;

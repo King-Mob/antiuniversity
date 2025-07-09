@@ -16,7 +16,7 @@ export function CreateVenue({
     const [description, setDescription] = useState("");
     const [address, setAddress] = useState("");
     const [capacity, setCapacity] = useState(0);
-    const [slotsAvailable, setSlotsAvailable] = useState([]);
+    const [slotsAvailable, setSlotsAvailable] = useState<number[]>([]);
     const [created, setCreated] = useState(false);
 
     async function create() {
@@ -43,6 +43,27 @@ export function CreateVenue({
             }
         }
     }
+
+    function toggleSlot(slot: Date) {
+        const slotIndex = slotsAvailable.findIndex((slotAvailable) => slotAvailable === slot.getTime());
+        if (slotIndex >= 0) {
+            const newSlotsAvailable = slotsAvailable.slice(0, slotIndex).concat(slotsAvailable.slice(slotIndex + 1));
+            setSlotsAvailable(newSlotsAvailable);
+        } else {
+            const newSlotsAvailable = slotsAvailable.concat(slot.getTime());
+            setSlotsAvailable(newSlotsAvailable);
+        }
+    }
+
+    const midnight13thUTC = 1760310000000;
+
+    const slots: Date[] = [];
+
+    for (let i = 0; i < 336; i++) {
+        slots.push(new Date(midnight13thUTC + i * 1000 * 60 * 30));
+    }
+
+    console.log(slotsAvailable);
 
     return (
         <div>
@@ -87,6 +108,27 @@ export function CreateVenue({
                         value={capacity}
                         onChange={(e) => setCapacity(parseInt(e.target.value))}
                     ></input>
+                    <div className="slots-grid">
+                        <p>13th</p>
+                        <p>14th</p>
+                        <p>15th</p>
+                        <p>16th</p>
+                        <p>17th</p>
+                        <p>18th</p>
+                        <p>19th</p>
+                        {slots.map((slot) => (
+                            <div className="slot-container">
+                                <button
+                                    className={`slot-toggle ${
+                                        slotsAvailable.includes(slot.getTime()) ? "slot-selected" : ""
+                                    }`}
+                                    onClick={() => toggleSlot(slot)}
+                                >
+                                    {slot.toTimeString().slice(0, 5)}
+                                </button>
+                            </div>
+                        ))}
+                    </div>
                     <button onClick={create}>Create</button>
                 </>
             )}

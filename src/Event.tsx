@@ -2,6 +2,8 @@ import { useParams, Link } from "react-router";
 import { type event, type user } from "./types";
 
 function Event({ events, user, isAdmin }: { events: event[]; user: user | undefined; isAdmin: boolean }) {
+    console.log(user, isAdmin);
+
     const { id } = useParams();
 
     const event = events.find((event) => event.id === id);

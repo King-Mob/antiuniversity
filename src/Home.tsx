@@ -50,6 +50,7 @@ function Event({
                 user.access_token
             );
             setEditMode(false);
+            setSlotsUsed([]);
         }
     }
 

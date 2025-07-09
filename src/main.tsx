@@ -29,7 +29,7 @@ function prepareVenues(timeline: matrixEvent[]) {
         .map((event) => ({ ...event.content, id: event.event_id, creator: justLocalPart(event.sender) } as venue));
 }
 
-function prepareEvents(timeline: matrixEvent[], user: user, isAdmin: boolean) {
+function prepareEvents(timeline: matrixEvent[], user: user | undefined, isAdmin: boolean) {
     let events: event[] = [];
 
     console.log(timeline);
