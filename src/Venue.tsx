@@ -1,7 +1,7 @@
 import { useParams, Link } from "react-router";
-import { type venue } from "./types";
+import { type venue, type user } from "./types";
 
-function Venue({ venues }: { venues: venue[] }) {
+function Venue({ venues, user, isAdmin }: { venues: venue[]; user: user | undefined; isAdmin: boolean }) {
     const { id } = useParams();
 
     const venue = venues.find((venue) => venue.id === id);
@@ -13,6 +13,7 @@ function Venue({ venues }: { venues: venue[] }) {
             <p>
                 Creator <Link to={`/user/${venue.creator}`}>{venue.creator}</Link>
             </p>
+            <p>Capacity: {venue.capacity}</p>
         </div>
     ) : (
         <div>

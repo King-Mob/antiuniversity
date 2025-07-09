@@ -9,11 +9,65 @@ import Event from "./Event.tsx";
 import User from "./User.tsx";
 import { CreateVenue, CreateEvent } from "./Create.tsx";
 import { getEvents } from "./requests.ts";
-import { VENUE_EVENT, EVENT_EVENT, type matrixEvent, type venue, type event, type user } from "./types.ts";
+import {
+    VENUE_EVENT,
+    EVENT_EVENT,
+    EVENT_UPDATED_EVENT,
+    type matrixEvent,
+    type venue,
+    type event,
+    type user,
+} from "./types.ts";
+
+function justLocalPart(username: string) {
+    return username.split("@")[1].split(":")[0];
+}
+
+function prepareVenues(timeline: matrixEvent[]) {
+    return timeline
+        .filter((event) => event.type === VENUE_EVENT)
+        .map((event) => ({ ...event.content, id: event.event_id, creator: justLocalPart(event.sender) } as venue));
+}
+
+function prepareEvents(timeline: matrixEvent[]) {
+    let events: event[] = [];
+
+    console.log(timeline);
+
+    timeline.forEach((matrixEvent) => {
+        if (matrixEvent.type === EVENT_EVENT && matrixEvent.content.name) {
+            events.push({
+                ...matrixEvent.content,
+                id: matrixEvent.event_id,
+                creator: justLocalPart(matrixEvent.sender),
+            });
+        }
+        if (matrixEvent.type === EVENT_UPDATED_EVENT) {
+            const eventToUpdatePosition = events.findIndex((event) => event.id === matrixEvent.content.old_event_id);
+            const oldEvent = events[eventToUpdatePosition];
+
+            if (eventToUpdatePosition) {
+                events = events
+                    .slice(0, eventToUpdatePosition)
+                    .concat([
+                        {
+                            ...matrixEvent.content,
+                            id: matrixEvent.content.old_event_id,
+                            creator: oldEvent.creator,
+                        },
+                    ])
+                    .concat(events.slice(eventToUpdatePosition + 1));
+            }
+        }
+    });
+
+    return events;
+}
 
 function App() {
     const [timeline, setTimeline] = useState<matrixEvent[]>([]);
     const [user, setUser] = useState<user | undefined>();
+    const isAdmin = false || user?.name === "antiuniversity.admin";
 
     function loadUser() {
         const loginDetails = localStorage.getItem("antiuniversity.login.details");
@@ -32,14 +86,8 @@ function App() {
         loadEvents();
     }, []);
 
-    const justLocalPart = (username: string) => username.split("@")[1].split(":")[0];
-
-    const venues = timeline
-        .filter((event) => event.type === VENUE_EVENT)
-        .map((event) => ({ ...event.content, id: event.event_id, creator: justLocalPart(event.sender) } as venue));
-    const events = timeline
-        .filter((event) => event.type === EVENT_EVENT && event.content.name)
-        .map((event) => ({ ...event.content, id: event.event_id, creator: justLocalPart(event.sender) } as event));
+    const venues = prepareVenues(timeline);
+    const events = prepareEvents(timeline);
 
     return (
         <BrowserRouter>
@@ -47,7 +95,14 @@ function App() {
                 <Route
                     path="/"
                     element={
-                        <Home venues={venues} events={events} user={user} setUser={setUser} loadEvents={loadEvents} />
+                        <Home
+                            venues={venues}
+                            events={events}
+                            user={user}
+                            setUser={setUser}
+                            loadEvents={loadEvents}
+                            isAdmin={isAdmin}
+                        />
                     }
                 />
                 <Route path="/new">
@@ -57,8 +112,8 @@ function App() {
                         element={<CreateEvent venues={venues} events={events} loadEvents={loadEvents} user={user} />}
                     />
                 </Route>
-                <Route path="/venue/:id" element={<Venue venues={venues} />} />
-                <Route path="/event/:id" element={<Event events={events} />} />
+                <Route path="/venue/:id" element={<Venue venues={venues} user={user} isAdmin={isAdmin} />} />
+                <Route path="/event/:id" element={<Event events={events} user={user} isAdmin={isAdmin} />} />
                 <Route path="/user/:id" element={<User events={events} />} />
             </Routes>
         </BrowserRouter>

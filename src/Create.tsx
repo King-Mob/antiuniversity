@@ -15,6 +15,8 @@ export function CreateVenue({
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [address, setAddress] = useState("");
+    const [capacity, setCapacity] = useState(0);
+    const [slotsAvailable, setSlotsAvailable] = useState([]);
     const [created, setCreated] = useState(false);
 
     async function create() {
@@ -25,6 +27,8 @@ export function CreateVenue({
                     description,
                     address,
                     creator: user.name,
+                    capacity,
+                    slotsAvailable,
                 },
                 user.access_token
             );
@@ -33,6 +37,7 @@ export function CreateVenue({
                 setName("");
                 setDescription("");
                 setAddress("");
+                setCapacity(0);
                 loadEvents();
             }
         }
@@ -76,6 +81,11 @@ export function CreateVenue({
                         onChange={(e) => setAddress(e.target.value)}
                         placeholder="address"
                     ></input>
+                    <input
+                        type="number"
+                        value={capacity}
+                        onChange={(e) => setCapacity(parseInt(e.target.value))}
+                    ></input>
                     <button onClick={create}>Create</button>
                 </>
             )}
@@ -97,8 +107,7 @@ export function CreateEvent({
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [venueId, setVenueId] = useState("");
-    const [startTime, setStartTime] = useState(new Date());
-    const [endTime, setEndTime] = useState(new Date());
+    const [slotsUsed, setSlotsUsed] = useState([]);
     const [created, setCreated] = useState(false);
 
     async function create() {
@@ -108,8 +117,7 @@ export function CreateEvent({
                     name,
                     description,
                     venueId,
-                    startTime,
-                    endTime,
+                    slotsUsed,
                     creator: user.name,
                 },
                 user.access_token
@@ -118,8 +126,7 @@ export function CreateEvent({
                 setName("");
                 setDescription("");
                 setVenueId("");
-                setStartTime(new Date());
-                setEndTime(new Date());
+                setSlotsUsed([]);
                 setCreated(true);
                 loadEvents();
             }
@@ -175,6 +182,7 @@ export function CreateEvent({
                             <option value={venue.id}>{venue.name}</option>
                         ))}
                     </select>
+
                     {/**
                      * <input
                         type="datetime-local"

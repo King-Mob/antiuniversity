@@ -1,35 +1,26 @@
-export type venue = {
-    id: string;
-    name: string;
-    description: string;
-    address: string;
-    creator: string;
-};
-
 export type newVenue = {
     name: string;
     description: string;
     address: string;
     creator: string;
+    capacity: number;
+    slotsAvailable: Date[];
 };
 
-export type event = {
+export type venue = newVenue & {
     id: string;
-    venueId: string;
-    name: string;
-    description: string;
-    startTime: Date;
-    endTime: Date;
-    creator: string;
 };
 
 export type newEvent = {
     venueId: string;
     name: string;
     description: string;
-    startTime: Date;
-    endTime: Date;
+    slotsUsed: Date[];
     creator: string;
+};
+
+export type event = newEvent & {
+    id: string;
 };
 
 export type matrixEvent = {
