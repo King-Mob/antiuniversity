@@ -24,6 +24,8 @@ function Event({
     const [name, setName] = useState(event.name);
     const [description, setDescription] = useState(event.description);
     const [slotsUsed, setSlotsUsed] = useState(event.slotsUsed);
+    const [published, setPublished] = useState(event.published);
+    const [approved, setApproved] = useState(event.approved);
 
     async function deleteEvent() {
         if (user) {
@@ -41,6 +43,8 @@ function Event({
                     description,
                     slotsUsed,
                     creator: event.creator,
+                    published,
+                    approved,
                 },
                 event.id,
                 user.access_token
@@ -84,6 +88,39 @@ function Event({
                 </>
             ) : (
                 <p>Description: {description}</p>
+            )}
+            {editMode ? (
+                <>
+                    <input
+                        id="published"
+                        type="checkbox"
+                        checked={published}
+                        onChange={(e) => setPublished(e.target.checked)}
+                    ></input>
+                    <label htmlFor="published">Published</label>
+                </>
+            ) : (
+                <>{!published && <p>Not yet published</p>}</>
+            )}
+
+            {isAdmin ? (
+                editMode ? (
+                    <>
+                        <input
+                            id="approved"
+                            type="checkbox"
+                            checked={approved}
+                            onChange={(e) => setApproved(e.target.checked)}
+                        ></input>
+                        <label htmlFor="approved">Approved</label>
+                    </>
+                ) : (
+                    <p>{approved ? "Event approved" : "This event has not been approved"}</p>
+                )
+            ) : (
+                <>
+                    <p>{approved ? "Event approved" : "This event has not been approved"}</p>
+                </>
             )}
 
             {editMode && (

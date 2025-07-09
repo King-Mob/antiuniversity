@@ -17,6 +17,8 @@ export type newEvent = {
     description: string;
     slotsUsed: Date[];
     creator: string;
+    published: boolean;
+    approved: boolean;
 };
 
 export type event = newEvent & {

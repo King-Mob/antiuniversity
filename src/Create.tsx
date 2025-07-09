@@ -38,6 +38,7 @@ export function CreateVenue({
                 setDescription("");
                 setAddress("");
                 setCapacity(0);
+                setSlotsAvailable([]);
                 loadEvents();
             }
         }
@@ -109,6 +110,7 @@ export function CreateEvent({
     const [venueId, setVenueId] = useState("");
     const [slotsUsed, setSlotsUsed] = useState([]);
     const [created, setCreated] = useState(false);
+    const [published, setPublished] = useState(false);
 
     async function create() {
         if (user) {
@@ -119,6 +121,8 @@ export function CreateEvent({
                     venueId,
                     slotsUsed,
                     creator: user.name,
+                    published,
+                    approved: false,
                 },
                 user.access_token
             );
@@ -132,18 +136,6 @@ export function CreateEvent({
             }
         }
     }
-
-    const time = new Date()
-        .toLocaleString("en-GB", {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-        })
-        .replace(" ", "T");
-    console.log(time);
 
     return (
         <div>
@@ -182,28 +174,16 @@ export function CreateEvent({
                             <option value={venue.id}>{venue.name}</option>
                         ))}
                     </select>
+                    <p>Select time slot </p>
 
-                    {/**
-                     * <input
-                        type="datetime-local"
-                        value={startTime.toString()}
-                        onChange={(e) => {
-                            console.log(e.target.value);
-
-                            // add one hour when setting start time
-                            // not quite sure what the issue is, suspect its time zone related
-                            // which means BST problem
-                            setStartTime(new Date(e.target.value));
-                        }}
-                    ></input>
                     <input
-                        type="datetime-local"
-                        value={endTime.toString()}
-                        onChange={(e) => setEndTime(new Date(e.target.value))}
+                        id="published"
+                        type="checkbox"
+                        checked={published}
+                        onChange={(e) => setPublished(e.target.checked)}
                     ></input>
-                     * 
-                     */}
-                    <p>Start time and end time to come, just fixing timezone bug </p>
+                    <label htmlFor="published">Ready to publish (leave unchecked to save as draft)</label>
+                    <br />
                     <button onClick={create}>Create</button>
                 </>
             )}

@@ -29,7 +29,7 @@ function prepareVenues(timeline: matrixEvent[]) {
         .map((event) => ({ ...event.content, id: event.event_id, creator: justLocalPart(event.sender) } as venue));
 }
 
-function prepareEvents(timeline: matrixEvent[]) {
+function prepareEvents(timeline: matrixEvent[], user: user, isAdmin: boolean) {
     let events: event[] = [];
 
     console.log(timeline);
@@ -61,7 +61,9 @@ function prepareEvents(timeline: matrixEvent[]) {
         }
     });
 
-    return events;
+    return events.filter(
+        (event) => (event.published && (event.approved || isAdmin)) || (user && event.creator === user.name)
+    );
 }
 
 function App() {
@@ -87,7 +89,7 @@ function App() {
     }, []);
 
     const venues = prepareVenues(timeline);
-    const events = prepareEvents(timeline);
+    const events = prepareEvents(timeline, user, isAdmin);
 
     return (
         <BrowserRouter>
