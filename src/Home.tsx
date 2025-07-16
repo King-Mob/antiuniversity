@@ -229,7 +229,6 @@ function Home({
     return VITE_SUBMISSIONS_OPEN === "true" ? (
         <>
             <h1>Antiuniversity Venues & Events</h1>
-            <UserHeader user={user} setUser={setUser} />
             <div>
                 <h2>Venues:</h2>
                 {venues.map((venue) => (

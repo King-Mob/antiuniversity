@@ -87,3 +87,11 @@
     max-width: 600px;
     width: 100%;
 }
+
+#navbar {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    max-width: 400px;
+    justify-content: space-between;
+}
