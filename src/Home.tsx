@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import "./App.css";
-import UserHeader from "./UserHeader";
 import { type venue, type event, type user } from "./types";
 import { getImage, putEvent, redactEvent } from "./requests";
 
@@ -214,14 +213,12 @@ function Home({
     events,
     user,
     isAdmin,
-    setUser,
     loadEvents,
 }: {
     venues: venue[];
     events: event[];
     user: user | undefined;
     isAdmin: boolean;
-    setUser: (user: user | undefined) => void;
     loadEvents: () => void;
 }) {
     const { VITE_SUBMISSIONS_OPEN } = import.meta.env;

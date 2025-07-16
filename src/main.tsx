@@ -100,14 +100,7 @@ function App() {
                 <Route
                     path="/"
                     element={
-                        <Home
-                            venues={venues}
-                            events={events}
-                            user={user}
-                            setUser={setUser}
-                            loadEvents={loadEvents}
-                            isAdmin={isAdmin}
-                        />
+                        <Home venues={venues} events={events} user={user} loadEvents={loadEvents} isAdmin={isAdmin} />
                     }
                 />
                 <Route path="/new">
