@@ -1,9 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import "./App.css";
 import UserHeader from "./UserHeader";
 import { type venue, type event, type user } from "./types";
-import { putEvent, redactEvent } from "./requests";
+import { getImage, putEvent, redactEvent } from "./requests";
+
+function Venue({ venue, user, isAdmin }: { venue: venue; user: user | undefined; isAdmin: boolean }) {
+    const [imageSrc, setImageSrc] = useState("");
+
+    async function loadImage() {
+        if (venue.picture) {
+            const pictureResponse = await getImage(venue.picture.replace("mxc://", ""));
+            const pictureResult = await pictureResponse.blob();
+            const imageUrl = window.URL.createObjectURL(pictureResult);
+            setImageSrc(imageUrl);
+        }
+    }
+
+    useEffect(() => {
+        loadImage();
+    }, []);
+
+    return (
+        <div className="venue">
+            <Link to={`/venue/${venue.id}`}>
+                <h3>{venue.name}</h3>
+            </Link>
+            <p>
+                Created by <Link to={`/user/${venue.creator}`}>{venue.creator}</Link>
+            </p>
+            <p>Description: {venue.description}</p>
+            {imageSrc && <img src={imageSrc} />}
+            <p>Address: {venue.address}</p>
+            {user && (isAdmin || venue.creator === user.name) && false && (
+                <>
+                    <button>edit venue</button>
+                    <button>delete venue</button>
+                </>
+            )}
+        </div>
+    );
+}
 
 function Event({
     event,
@@ -23,9 +60,24 @@ function Event({
     const [venueId, setVenueId] = useState(event.venueId);
     const [name, setName] = useState(event.name);
     const [description, setDescription] = useState(event.description);
+    const [picture, setPicture] = useState(event.picture);
     const [slotsUsed, setSlotsUsed] = useState(event.slotsUsed);
     const [published, setPublished] = useState(event.published);
     const [approved, setApproved] = useState(event.approved);
+    const [imageSrc, setImageSrc] = useState("");
+
+    async function loadImage() {
+        if (event.picture) {
+            const pictureResponse = await getImage(event.picture.replace("mxc://", ""));
+            const pictureResult = await pictureResponse.blob();
+            const imageUrl = window.URL.createObjectURL(pictureResult);
+            setImageSrc(imageUrl);
+        }
+    }
+
+    useEffect(() => {
+        loadImage();
+    }, []);
 
     async function deleteEvent() {
         if (user) {
@@ -41,6 +93,7 @@ function Event({
                     venueId,
                     name,
                     description,
+                    picture,
                     slotsUsed,
                     creator: event.creator,
                     published,
@@ -51,10 +104,12 @@ function Event({
             );
             setEditMode(false);
             setSlotsUsed([]);
+            setPicture(event.picture);
         }
     }
 
     const venue = venues.find((venue) => venue.id === venueId);
+    const time = slotsUsed?.[0] ? new Date(slotsUsed[0]).toLocaleString() : "";
 
     return (
         <div className="event">
@@ -83,6 +138,13 @@ function Event({
                 ))}
             {editMode ? (
                 <>
+                    <p>Time: {time}</p>{" "}
+                </>
+            ) : (
+                <p>Time: {time}</p>
+            )}
+            {editMode ? (
+                <>
                     {" "}
                     <br />{" "}
                     <input type="text" value={description} onChange={(e) => setDescription(e.target.value)}></input>
@@ -90,6 +152,7 @@ function Event({
             ) : (
                 <p>Description: {description}</p>
             )}
+            {imageSrc && <img src={imageSrc} />}
             {editMode ? (
                 <>
                     <input
@@ -170,22 +233,7 @@ function Home({
             <div>
                 <h2>Venues:</h2>
                 {venues.map((venue) => (
-                    <div className="venue">
-                        <Link to={`/venue/${venue.id}`}>
-                            <h3>{venue.name}</h3>
-                        </Link>
-                        <p>
-                            Created by <Link to={`/user/${venue.creator}`}>{venue.creator}</Link>
-                        </p>
-                        <p>Description: {venue.description}</p>
-                        <p>Address: {venue.address}</p>
-                        {user && (isAdmin || venue.creator === user.name) && false && (
-                            <>
-                                <button>edit venue</button>
-                                <button>delete venue</button>
-                            </>
-                        )}
-                    </div>
+                    <Venue venue={venue} user={user} isAdmin={isAdmin} />
                 ))}
                 {user && (
                     <Link to="/new/venue">

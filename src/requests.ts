@@ -153,3 +153,24 @@ export const joinRoom = async (username: string, access_token: string) => {
         },
     });
 };
+
+export const postImage = async (fileName: string, image: ArrayBuffer, access_token: string) => {
+    const fileExtension = fileName.split(".")[1];
+
+    return fetch(`${VITE_HOMESERVER}/_matrix/media/v3/upload?filename=${fileName}`, {
+        method: "POST",
+        body: image,
+        headers: {
+            "Content-Type": `image/${fileExtension}`,
+            Authorization: `Bearer ${access_token}`,
+        },
+    });
+};
+
+export const getImage = async (mxc: string) => {
+    return fetch(`${VITE_HOMESERVER}/_matrix/client/v1/media/download/${mxc}`, {
+        headers: {
+            Authorization: `Bearer ${VITE_MATRIX_TOKEN}`,
+        },
+    });
+};

@@ -1,8 +1,11 @@
 #root {
     max-width: 1280px;
+    width: 100%;
     margin: 0 auto;
-    padding: 2rem;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .logo {
@@ -41,9 +44,10 @@
     color: #888;
 }
 
-.slots-grid {
-    display: grid;
-    grid-template-columns: auto auto auto auto auto auto auto;
+.days-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     margin-bottom: 10px;
 }
 
@@ -53,14 +57,33 @@
     align-items: center;
 }
 
-.slot-toggle,
-.slot-toggle:focus {
-    border-radius: 0px;
-    border: solid black 1px;
-    outline: none;
+.slot-selected {
+    opacity: 1;
+}
+
+.slot-unselected {
     opacity: 0.3;
 }
 
-.slot-selected {
-    opacity: 1;
+.slot-toggle,
+.slot-toggle:focus {
+    width: 60px;
+    padding: 10px;
+    border-radius: 0px;
+    border: solid black 1px;
+    outline: none;
+}
+
+.day-heading {
+    width: 60px;
+}
+
+.creation-container {
+    width: 100%;
+    max-width: 800px;
+}
+
+.create-image {
+    max-width: 600px;
+    width: 100%;
 }
