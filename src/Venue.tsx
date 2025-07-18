@@ -11,7 +11,6 @@ function Venue({ venues, user, isAdmin }: { venues: venue[]; user: user | undefi
     return venue ? (
         <div>
             <h1>Venue: {venue.name}</h1>
-            <h2>{venue.description}</h2>
             <p>
                 Creator <Link to={`/user/${venue.creator}`}>{venue.creator}</Link>
             </p>
