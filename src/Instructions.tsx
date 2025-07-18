@@ -16,7 +16,7 @@ While the co-organisers at Antiuni HQ help administrate the platform, it’s the
 
 Past events have contained elements of the following – participation, open-ended (but structured) discussion, collaboration, a practical workshop, a walk, an educational (or otherwise) experiment, a public space intervention, direct action…
 
-There is no application process - all events are included as long as they follow the Antiuni principles outlined [here](https://festival.antiuniversity.org/pages/about) (in short - cause no harm)
+There is no application process - all events are included as long as they follow the Antiuni principles outlined [here](/about) (in short - cause no harm)
 
 You may have a fully formed idea, with a platform and a specific audience in mind, or you might want to discuss your ideas with us. We will be holding facilitation sessions to help with brainstorming or any questions. Check our instagram for updates on facilitation sessions!
 
