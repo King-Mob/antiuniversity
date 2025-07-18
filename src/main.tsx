@@ -7,8 +7,10 @@ import UserHeader from "./UserHeader.tsx";
 import Home from "./Home.tsx";
 import Venue from "./Venue.tsx";
 import Event from "./Event.tsx";
+import EditEvent from "./EditEvent.tsx";
 import User from "./User.tsx";
-import { CreateVenue, CreateEvent } from "./Create.tsx";
+import CreateVenue from "./CreateVenue.tsx";
+import CreateEvent from "./CreateEvent.tsx";
 import About from "./About.tsx";
 import Contact from "./Contact.tsx";
 import Instructions from "./Instructions.tsx";
@@ -93,6 +95,7 @@ function App() {
 
     const venues = prepareVenues(timeline);
     const events = prepareEvents(timeline, user, isAdmin);
+    const draftEvents = prepareEvents(timeline, user, true);
 
     return (
         <BrowserRouter>
@@ -104,15 +107,36 @@ function App() {
                         <Home venues={venues} events={events} user={user} loadEvents={loadEvents} isAdmin={isAdmin} />
                     }
                 />
-                <Route path="/new">
-                    <Route path="venue" element={<CreateVenue venues={venues} loadEvents={loadEvents} user={user} />} />
+                <Route path="/venue">
+                    <Route path="new" element={<CreateVenue venues={venues} loadEvents={loadEvents} user={user} />} />
+                    <Route path=":id" element={<Venue venues={venues} user={user} isAdmin={isAdmin} />} />
+                </Route>
+                <Route path="/event">
+                    <Route path=":id" element={<Event events={events} user={user} isAdmin={isAdmin} />} />
                     <Route
-                        path="event"
-                        element={<CreateEvent venues={venues} events={events} loadEvents={loadEvents} user={user} />}
+                        path=":id/edit"
+                        element={
+                            <EditEvent
+                                venues={venues}
+                                existingEvents={draftEvents}
+                                user={user}
+                                isAdmin={isAdmin}
+                                loadEvents={loadEvents}
+                            />
+                        }
+                    />
+                    <Route
+                        path="new"
+                        element={
+                            <CreateEvent
+                                venues={venues}
+                                existingEvents={draftEvents}
+                                loadEvents={loadEvents}
+                                user={user}
+                            />
+                        }
                     />
                 </Route>
-                <Route path="/venue/:id" element={<Venue venues={venues} user={user} isAdmin={isAdmin} />} />
-                <Route path="/event/:id" element={<Event events={events} user={user} isAdmin={isAdmin} />} />
                 <Route path="/user/:id" element={<User events={events} />} />
                 <Route path="about" element={<About />} />
                 <Route path="contact" element={<Contact />} />

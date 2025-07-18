@@ -1,9 +1,10 @@
 export type newVenue = {
     name: string;
-    description: string;
     address: string;
     creator: string;
     capacity: number;
+    accessibilityInformation: string;
+    otherInformation: string;
     slotsAvailable: number[];
     picture: string;
 };
@@ -16,6 +17,10 @@ export type newEvent = {
     venueId: string;
     name: string;
     description: string;
+    organiserName: string;
+    organiserEmail: string;
+    organiserPhone?: string;
+    organiserWebsite?: string;
     slotsUsed: number[];
     creator: string;
     published: boolean;

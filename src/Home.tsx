@@ -4,7 +4,7 @@ import "./App.css";
 import { type venue, type event, type user, type day } from "./types";
 import { getImage, putEvent, redactEvent } from "./requests";
 
-export function Venue({ venue, user, isAdmin }: { venue: venue; user: user | undefined; isAdmin: boolean }) {
+export function Venue({ venue }: { venue: venue }) {
     const [imageSrc, setImageSrc] = useState("");
 
     async function loadImage() {
@@ -28,15 +28,12 @@ export function Venue({ venue, user, isAdmin }: { venue: venue; user: user | und
             <p>
                 Created by <Link to={`/user/${venue.creator}`}>{venue.creator}</Link>
             </p>
-            <p>Description: {venue.description}</p>
+
             {imageSrc && <img src={imageSrc} />}
             <p>Address: {venue.address}</p>
-            {user && (isAdmin || venue.creator === user.name) && false && (
-                <>
-                    <button>edit venue</button>
-                    <button>delete venue</button>
-                </>
-            )}
+            <p>Capacity: {venue.capacity}</p>
+
+            <p>Other Information: {venue.otherInformation}</p>
         </div>
     );
 }
@@ -97,6 +94,8 @@ function Event({
                     creator: event.creator,
                     published,
                     approved,
+                    organiserName: event.organiserName,
+                    organiserEmail: event.organiserEmail,
                 },
                 event.id,
                 user.access_token
@@ -200,7 +199,9 @@ function Event({
             )}
             {user && (isAdmin || event.creator === user.name) && (
                 <>
-                    <button onClick={() => setEditMode(true)}>edit event</button>
+                    <Link to={`/event/${event.id}/edit`}>
+                        <p>Edit event</p>
+                    </Link>
                     <button onClick={() => setDeleteMode(true)}>delete event</button>
                 </>
             )}

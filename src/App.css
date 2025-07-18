@@ -81,6 +81,7 @@
 .creation-container {
     width: 100%;
     max-width: 800px;
+    margin-bottom: 20px;
 }
 
 .create-image {

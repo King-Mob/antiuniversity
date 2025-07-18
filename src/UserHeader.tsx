@@ -67,7 +67,7 @@ function UserHeader({ user, setUser }: { user: user | undefined; setUser: (user:
         <>
             <div id="navbar">
                 <Link to="/">
-                    <p>Home</p>
+                    <p>Programme</p>
                 </Link>
                 <Link to="/about">
                     <p>About</p>
