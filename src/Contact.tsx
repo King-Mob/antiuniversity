@@ -16,9 +16,9 @@ We aim to get our mailing list up and running again soon, watch this space 😊
 
 function Contact() {
     return (
-        <>
+        <div className="markdown-content">
             <Markdown>{content}</Markdown>
-        </>
+        </div>
     );
 }
 

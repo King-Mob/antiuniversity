@@ -101,12 +101,7 @@ function App() {
         <BrowserRouter>
             <UserHeader user={user} setUser={setUser} />
             <Routes>
-                <Route
-                    path="/"
-                    element={
-                        <Home venues={venues} events={events} user={user} loadEvents={loadEvents} isAdmin={isAdmin} />
-                    }
-                />
+                <Route path="/" element={<Home venues={venues} events={events} user={user} />} />
                 <Route path="/venue">
                     <Route path="new" element={<CreateVenue venues={venues} loadEvents={loadEvents} user={user} />} />
                     <Route path=":id" element={<Venue venues={venues} user={user} isAdmin={isAdmin} />} />

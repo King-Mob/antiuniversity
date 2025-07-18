@@ -65,6 +65,7 @@ function UserHeader({ user, setUser }: { user: user | undefined; setUser: (user:
 
     return (
         <>
+            <h1 id="title">Antiuniversity Festival 2025: 13th-19th October</h1>
             <div id="navbar">
                 <Link to="/">
                     <p>Programme</p>

@@ -27,9 +27,9 @@ All events will be accepted, providing they do not cause any harm.
 
 function About() {
     return (
-        <>
+        <div className="markdown-content">
             <Markdown>{content}</Markdown>
-        </>
+        </div>
     );
 }
 

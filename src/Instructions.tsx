@@ -89,9 +89,9 @@ If you need support from Antiuni HQ, feel free to reach us via email or instagra
 
 function Instructions() {
     return (
-        <>
+        <div className="markdown-content">
             <Markdown>{content}</Markdown>
-        </>
+        </div>
     );
 }
 

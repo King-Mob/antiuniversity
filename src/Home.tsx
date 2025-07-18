@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import "./App.css";
 import { type venue, type event, type user, type day } from "./types";
-import { getImage, redactEvent } from "./requests";
+import { getImage } from "./requests";
 
 export function Venue({ venue }: { venue: venue }) {
     const [imageSrc, setImageSrc] = useState("");
@@ -38,20 +38,7 @@ export function Venue({ venue }: { venue: venue }) {
     );
 }
 
-function Event({
-    event,
-    user,
-    isAdmin,
-    venues,
-    loadEvents,
-}: {
-    event: event;
-    user: user | undefined;
-    isAdmin: boolean;
-    venues: venue[];
-    loadEvents: () => void;
-}) {
-    const [deleteMode, setDeleteMode] = useState(false);
+function Event({ event, venues }: { event: event; venues: venue[] }) {
     const [imageSrc, setImageSrc] = useState("");
 
     async function loadImage() {
@@ -67,66 +54,28 @@ function Event({
         loadImage();
     }, []);
 
-    async function deleteEvent() {
-        if (user) {
-            await redactEvent(event.id, user.access_token);
-            loadEvents();
-        }
-    }
-
     const venue = venues.find((venue) => venue.id === event.venueId);
     const time = event.slotsUsed?.[0] ? new Date(event.slotsUsed[0]).toLocaleString() : "";
 
     return (
         <div className="event">
-            <Link to={`/event/${event.id}`}>
-                <h3>{event.name}</h3>
-            </Link>
-            <p>
-                Created by <Link to={`/user/${event.creator}`}>{event.creator}</Link>
-            </p>
-            {venue && (
-                <Link to={`/venue/${venue.id}`}>
-                    <p>{venue.name}</p>
+            <img src={imageSrc || "/reader.svg"} className="event-image" />
+            <div className="event-right">
+                <Link to={`/event/${event.id}`}>
+                    <h2>{event.name}</h2>
                 </Link>
-            )}
-            <p>Time: {time}</p>
-            <p>Description: {event.description}</p>
-            {imageSrc && <img src={imageSrc} />}
-            <>{!event.published && <p>Not yet published</p>}</>
-            <p>{event.approved ? "Event approved" : "This event has not been approved"}</p>
-            {deleteMode && (
-                <div>
-                    <p>Are you sure you want to delete this event?</p>
-                    <button onClick={() => setDeleteMode(false)}>Cancel</button>
-                    <button onClick={deleteEvent}>Delete event</button>{" "}
-                </div>
-            )}
-            {user && (isAdmin || event.creator === user.name) && (
-                <>
-                    <Link to={`/event/${event.id}/edit`}>
-                        <p>Edit event</p>
-                    </Link>
-                    <button onClick={() => setDeleteMode(true)}>delete event</button>
-                </>
-            )}
+                {venue && (
+                    <p>
+                        Venue: <Link to={`/venue/${venue.id}`}>{venue.name}</Link>
+                    </p>
+                )}
+                <p>Time: {time}</p>
+            </div>
         </div>
     );
 }
 
-function Home({
-    venues,
-    events,
-    user,
-    isAdmin,
-    loadEvents,
-}: {
-    venues: venue[];
-    events: event[];
-    user: user | undefined;
-    isAdmin: boolean;
-    loadEvents: () => void;
-}) {
+function Home({ venues, events, user }: { venues: venue[]; events: event[]; user: user | undefined }) {
     const { VITE_SUBMISSIONS_OPEN } = import.meta.env;
 
     const [dayActive, setDayActive] = useState(-1);
@@ -153,38 +102,29 @@ function Home({
 
     return VITE_SUBMISSIONS_OPEN === "true" ? (
         <>
-            <h1>Antiuniversity Festival 2025</h1>
-            <h2>13th - 19th October</h2>
             <p>Event submissions open: 20th July - 31st August</p>
             <p>
                 View the schedule of events below, and go to <Link to="/instructions">Instructions</Link> to find out
                 how to register your own event!
             </p>
-            <div>
+            <div className="day-container">
                 {days.map((day, dayIndex) =>
                     dayIndex === dayActive ? (
-                        <div>
-                            <button onClick={() => setDayActive(-1)}>
+                        <>
+                            <button className="day-button" onClick={() => setDayActive(-1)}>
                                 <h2>{day.name}</h2>
                             </button>
                             {day.events.map((event) => (
-                                <Event
-                                    event={event}
-                                    user={user}
-                                    isAdmin={isAdmin}
-                                    venues={venues}
-                                    loadEvents={loadEvents}
-                                    key={event.id}
-                                />
+                                <Event event={event} venues={venues} key={event.id} />
                             ))}
                             {day.events.length === 0 && <p>No events on this day</p>}
-                        </div>
+                        </>
                     ) : (
-                        <div>
-                            <button onClick={() => setDayActive(dayIndex)}>
+                        <>
+                            <button className="day-button" onClick={() => setDayActive(dayIndex)}>
                                 <h2>{day.name}</h2>
                             </button>
-                        </div>
+                        </>
                     )
                 )}
                 {user && (

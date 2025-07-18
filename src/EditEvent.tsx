@@ -1,6 +1,6 @@
 import { useState, useEffect, type ReactElement } from "react";
 import { useNavigate, useParams } from "react-router";
-import { putEvent, postImage, getImage } from "./requests";
+import { putEvent, postImage, getImage, redactEvent } from "./requests";
 import { type venue, type event, type user } from "./types";
 
 function EditEvent({
@@ -30,6 +30,7 @@ function EditEvent({
     const [published, setPublished] = useState(false);
     const [approved, setApproved] = useState(false);
     const [creator, setCreator] = useState("");
+    const [deleteMode, setDeleteMode] = useState(false);
     const navigate = useNavigate();
 
     async function loadImage(url: string) {
@@ -101,6 +102,13 @@ function EditEvent({
                 loadEvents();
                 navigate(`/event/${id}`);
             }
+        }
+    }
+
+    async function deleteEvent() {
+        if (user && id) {
+            await redactEvent(id, user.access_token);
+            loadEvents();
         }
     }
 
@@ -238,7 +246,7 @@ function EditEvent({
                 ></input>
                 <label htmlFor="published">Ready to publish (leave unchecked to save as draft)</label>
                 <br />
-                {!approved && <p>This event hasn't been approved yet</p>}
+                {!approved && <p>Event awaiting approval, will be publically visible soon</p>}
                 {isAdmin && approved ? (
                     <>
                         <button onClick={() => setApproved(false)}>Unapprove</button>
@@ -253,6 +261,15 @@ function EditEvent({
                 <button onClick={save} disabled={!isValid}>
                     Save
                 </button>
+                <br />
+                {deleteMode ? (
+                    <>
+                        <button onClick={deleteEvent}>Delete</button>
+                        <button onClick={() => setDeleteMode(false)}>Cancel</button>
+                    </>
+                ) : (
+                    <button onClick={() => setDeleteMode(true)}>Delete Event</button>
+                )}
             </>
         </div>
     );
