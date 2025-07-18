@@ -119,30 +119,32 @@ function CreateEvent({
         <div className="creation-container">
             <h1>Create New Event</h1>
             <>
-                <p>This is where you register your Antiuniversity event.</p>
-                <p>
-                    {" "}
-                    Please read and follow these <Link to="/instructions">instructions</Link> before creating your
-                    event.{" "}
-                </p>
-                <p>
-                    When describing your event, please be as detailed as possible so people know what to expect. (max
-                    300 words)
-                </p>
-                <p>Please include information about you or your group/organisation (max 100 words).</p>
-                <p>Make sure you have included a valid contact, so we can be in touch about your event.</p>
-                <p>
-                    Is your event taking place online? Choose the online Antiuni place as your venue and add the link to
-                    your digital session in your event description. Alternatively you can create your own online place
-                    especially for your events.
-                </p>
-                <p>To register a physical space, go to VENUES before creating your event.</p>
-                <p>
-                    Save your event as a draft if it is not ready to be publically visible. Your event will immediately
-                    go into the programme when you submit it. (Don't worry, you can still edit it later if you make a
-                    mistake).
-                </p>
-                <p> Please get in touch if you have any questions.</p>
+                <div className="markdown-content">
+                    <p>This is where you register your Antiuniversity event.</p>
+                    <p>
+                        {" "}
+                        Please read and follow these <Link to="/instructions">instructions</Link> before creating your
+                        event.{" "}
+                    </p>
+                    <p>
+                        When describing your event, please be as detailed as possible so people know what to expect.
+                        (max 300 words)
+                    </p>
+                    <p>Please include information about you or your group/organisation (max 100 words).</p>
+                    <p>Make sure you have included a valid contact, so we can be in touch about your event.</p>
+                    <p>
+                        Is your event taking place online? Choose the online Antiuni place as your venue and add the
+                        link to your digital session in your event description. Alternatively you can create your own
+                        online place especially for your events.
+                    </p>
+                    <p>To register a physical space, go to VENUES before creating your event.</p>
+                    <p>
+                        Save your event as a draft if it is not ready to be publically visible. Your event will
+                        immediately go into the programme when you submit it. (Don't worry, you can still edit it later
+                        if you make a mistake).
+                    </p>
+                    <p> Please get in touch if you have any questions.</p>
+                </div>
                 <h2>Organiser Information</h2>
                 <input
                     type="text"
@@ -170,12 +172,14 @@ function CreateEvent({
                 ></input>
                 <h2>Event Information</h2>
                 <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="name"></input>
-                <input
-                    type="text"
+                <br />
+                <textarea
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    placeholder="description"
-                ></input>
+                    placeholder="Description"
+                    rows={3}
+                    cols={33}
+                ></textarea>
                 <p>Picture:</p>
                 {pictureFile && (
                     <>

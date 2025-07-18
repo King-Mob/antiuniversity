@@ -1,18 +1,9 @@
 import { useState, type ReactElement } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { postVenue, postImage } from "./requests";
-import { type venue, type user } from "./types";
-import { Venue } from "./Home";
+import { type user } from "./types";
 
-function CreateVenue({
-    venues,
-    loadEvents,
-    user,
-}: {
-    venues: venue[];
-    loadEvents: () => void;
-    user: user | undefined;
-}) {
+function CreateVenue({ loadEvents, user }: { loadEvents: () => void; user: user | undefined }) {
     const [name, setName] = useState("");
     const [otherInformation, setOtherInformation] = useState("");
     const [accessibilityInformation, setAccessibilityInformation] = useState("");
@@ -20,7 +11,7 @@ function CreateVenue({
     const [address, setAddress] = useState("");
     const [capacity, setCapacity] = useState(0);
     const [slotsAvailable, setSlotsAvailable] = useState<number[]>([]);
-    const [created, setCreated] = useState(false);
+    const navigate = useNavigate();
 
     async function uploadImage() {
         if (pictureFile && user) {
@@ -50,7 +41,7 @@ function CreateVenue({
                 user.access_token
             );
             if (response) {
-                setCreated(true);
+                navigate(`/venue/${response.event_id}`);
                 setName("");
                 setOtherInformation("");
                 setAccessibilityInformation("");
@@ -111,67 +102,47 @@ function CreateVenue({
                 <h2>Back</h2>
             </Link>
             <h1>New Venue</h1>
-            {created ? (
+
+            <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="name"></input>
+            <input
+                type="text"
+                value={otherInformation}
+                onChange={(e) => setOtherInformation(e.target.value)}
+                placeholder="other information"
+            ></input>
+            <input
+                type="text"
+                value={accessibilityInformation}
+                onChange={(e) => setAccessibilityInformation(e.target.value)}
+                placeholder="accessibility information"
+            ></input>
+            <p>Picture:</p>
+            {pictureFile && (
                 <>
-                    <h2>Venue created!</h2>
-                    <h2>Venue list</h2>
-                    {venues.map((venue) => (
-                        <Venue venue={venue} />
-                    ))}
-                </>
-            ) : (
-                <>
-                    <input
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="name"
-                    ></input>
-                    <input
-                        type="text"
-                        value={otherInformation}
-                        onChange={(e) => setOtherInformation(e.target.value)}
-                        placeholder="other information"
-                    ></input>
-                    <input
-                        type="text"
-                        value={accessibilityInformation}
-                        onChange={(e) => setAccessibilityInformation(e.target.value)}
-                        placeholder="accessibility information"
-                    ></input>
-                    <p>Picture:</p>
-                    {pictureFile && (
-                        <>
-                            <img src={pictureUrl} className="create-image" />
-                            <br />
-                        </>
-                    )}
-                    <input
-                        type="file"
-                        onChange={(e) => setPictureFile(e.target.files ? e.target.files[0] : undefined)}
-                        accept="image/png, image/jpeg, image/gif"
-                    />
+                    <img src={pictureUrl} className="create-image" />
                     <br />
-                    <input
-                        type="text"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                        placeholder="address (include postcode)"
-                    ></input>
-                    <input
-                        type="number"
-                        value={capacity}
-                        onChange={(e) => setCapacity(parseInt(e.target.value))}
-                    ></input>
-                    <p>Time slots available [choose half hour slots within the week 13th-19th October]</p>
-                    <div className="days-container">
-                        {days.map((day) => (
-                            <div>{day}</div>
-                        ))}
-                    </div>
-                    <button onClick={create}>Create</button>
                 </>
             )}
+            <input
+                type="file"
+                onChange={(e) => setPictureFile(e.target.files ? e.target.files[0] : undefined)}
+                accept="image/png, image/jpeg, image/gif"
+            />
+            <br />
+            <input
+                type="text"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                placeholder="address (include postcode)"
+            ></input>
+            <input type="number" value={capacity} onChange={(e) => setCapacity(parseInt(e.target.value))}></input>
+            <p>Time slots available [choose half hour slots within the week 13th-19th October]</p>
+            <div className="days-container">
+                {days.map((day) => (
+                    <div>{day}</div>
+                ))}
+            </div>
+            <button onClick={create}>Create</button>
         </div>
     );
 }

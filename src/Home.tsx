@@ -4,40 +4,6 @@ import "./App.css";
 import { type venue, type event, type user, type day } from "./types";
 import { getImage } from "./requests";
 
-export function Venue({ venue }: { venue: venue }) {
-    const [imageSrc, setImageSrc] = useState("");
-
-    async function loadImage() {
-        if (venue.picture) {
-            const pictureResponse = await getImage(venue.picture.replace("mxc://", ""));
-            const pictureResult = await pictureResponse.blob();
-            const imageUrl = window.URL.createObjectURL(pictureResult);
-            setImageSrc(imageUrl);
-        }
-    }
-
-    useEffect(() => {
-        loadImage();
-    }, []);
-
-    return (
-        <div className="venue">
-            <Link to={`/venue/${venue.id}`}>
-                <h3>{venue.name}</h3>
-            </Link>
-            <p>
-                Created by <Link to={`/user/${venue.creator}`}>{venue.creator}</Link>
-            </p>
-
-            {imageSrc && <img src={imageSrc} />}
-            <p>Address: {venue.address}</p>
-            <p>Capacity: {venue.capacity}</p>
-
-            <p>Other Information: {venue.otherInformation}</p>
-        </div>
-    );
-}
-
 function Event({ event, venues }: { event: event; venues: venue[] }) {
     const [imageSrc, setImageSrc] = useState("");
 

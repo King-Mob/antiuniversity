@@ -1,7 +1,37 @@
 import Markdown from "react-markdown";
 import { Link } from "react-router";
-import { Venue } from "./Home";
+import { useEffect, useState } from "react";
+import { getImage } from "./requests";
 import { type venue, type user } from "./types";
+
+function Venue({ venue }: { venue: venue }) {
+    const [imageSrc, setImageSrc] = useState("");
+
+    async function loadImage() {
+        if (venue.picture) {
+            const pictureResponse = await getImage(venue.picture.replace("mxc://", ""));
+            const pictureResult = await pictureResponse.blob();
+            const imageUrl = window.URL.createObjectURL(pictureResult);
+            setImageSrc(imageUrl);
+        }
+    }
+
+    useEffect(() => {
+        loadImage();
+    }, []);
+
+    return (
+        <div className="venue">
+            <img src={imageSrc || "/reader.svg"} className="event-image" />
+            <div className="venue-right">
+                <Link to={`/venue/${venue.id}`}>
+                    <h3>{venue.name}</h3>
+                </Link>
+                <p>Address: {venue.address}</p>
+            </div>
+        </div>
+    );
+}
 
 const content = `
 **ANTIUNI 2025 VENUES**
@@ -19,12 +49,11 @@ Use this [guide](festival.antiuniversity.org/instructions) if you need more info
 
 function Venues({ venues, user }: { venues: venue[]; user: user | undefined }) {
     return (
-        <>
+        <div className="venues-container">
+            <h1>Venues</h1>
             <div className="markdown-content">
                 <Markdown>{content}</Markdown>
             </div>
-
-            <h2>Venues</h2>
             {venues.map((venue) => (
                 <Venue venue={venue} />
             ))}
@@ -33,7 +62,7 @@ function Venues({ venues, user }: { venues: venue[]; user: user | undefined }) {
                     <h2>Create venue</h2>
                 </Link>
             )}
-        </>
+        </div>
     );
 }
 

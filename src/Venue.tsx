@@ -2,8 +2,6 @@ import { useParams, Link } from "react-router";
 import { type venue, type user } from "./types";
 
 function Venue({ venues, user, isAdmin }: { venues: venue[]; user: user | undefined; isAdmin: boolean }) {
-    console.log(user, isAdmin);
-
     const { id } = useParams();
 
     const venue = venues.find((venue) => venue.id === id);
@@ -15,6 +13,11 @@ function Venue({ venues, user, isAdmin }: { venues: venue[]; user: user | undefi
                 Creator <Link to={`/user/${venue.creator}`}>{venue.creator}</Link>
             </p>
             <p>Capacity: {venue.capacity}</p>
+            {(isAdmin || (user && user.name === venue.creator)) && (
+                <Link to={`/venue/${id}/edit`}>
+                    <p>Edit venue</p>
+                </Link>
+            )}
         </div>
     ) : (
         <div>
