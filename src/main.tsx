@@ -37,8 +37,6 @@ function prepareVenues(timeline: matrixEvent[]) {
 function prepareEvents(timeline: matrixEvent[], user: user | undefined, isAdmin: boolean) {
     let events: event[] = [];
 
-    console.log(timeline);
-
     timeline.forEach((matrixEvent) => {
         if (matrixEvent.type === EVENT_EVENT && matrixEvent.content.name) {
             events.push({
@@ -51,7 +49,7 @@ function prepareEvents(timeline: matrixEvent[], user: user | undefined, isAdmin:
             const eventToUpdatePosition = events.findIndex((event) => event.id === matrixEvent.content.old_event_id);
             const oldEvent = events[eventToUpdatePosition];
 
-            if (eventToUpdatePosition) {
+            if (oldEvent) {
                 events = events
                     .slice(0, eventToUpdatePosition)
                     .concat([
@@ -65,6 +63,8 @@ function prepareEvents(timeline: matrixEvent[], user: user | undefined, isAdmin:
             }
         }
     });
+
+    console.log("events", events);
 
     return events.filter(
         (event) => (event.published && (event.approved || isAdmin)) || (user && event.creator === user.name)
