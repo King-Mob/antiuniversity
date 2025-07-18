@@ -83,7 +83,7 @@ Eventbrite [Tips](https://www.eventbrite.co.uk/blog/coronavirus-event-tips-resou
 
 Send us any photos, observations, or useful quotes from guests and hosts. 
 We encourage you to use your event as a jumping off platform to build new communities or regular events. Keep in touch in future so we can help build up the wider Antiuni ecosystem and boost other relevant projects. 
-If you need support from Antiuni HQ, feel free to reach us via email or instagram. Links are on the [contact page](festival.antiuniversity.org/contact).  
+If you need support from Antiuni HQ, feel free to reach us via email or instagram. Links are on the [contact page](/contact).  
 
 `;
 

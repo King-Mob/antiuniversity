@@ -17,13 +17,16 @@ If your event takes place online only, please choose the online Antiuni place as
 Use this [guide](festival.antiuniversity.org/instructions) if you need more information on registering an event or creating a venue.
 `;
 
-function Venues({ venues, user, isAdmin }: { venues: venue[]; user: user | undefined; isAdmin: boolean }) {
+function Venues({ venues, user }: { venues: venue[]; user: user | undefined }) {
     return (
         <>
-            <Markdown>{content}</Markdown>
+            <div className="markdown-content">
+                <Markdown>{content}</Markdown>
+            </div>
+
             <h2>Venues</h2>
             {venues.map((venue) => (
-                <Venue venue={venue} user={user} isAdmin={isAdmin} />
+                <Venue venue={venue} />
             ))}
             {user && (
                 <Link to="/new/venue">

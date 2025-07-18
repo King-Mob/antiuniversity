@@ -135,7 +135,7 @@ function App() {
                 <Route path="/user/:id" element={<User events={events} />} />
                 <Route path="about" element={<About />} />
                 <Route path="contact" element={<Contact />} />
-                <Route path="venues" element={<Venues venues={venues} user={user} isAdmin={isAdmin} />} />
+                <Route path="venues" element={<Venues venues={venues} user={user} />} />
                 <Route path="instructions" element={<Instructions />} />
             </Routes>
         </BrowserRouter>
