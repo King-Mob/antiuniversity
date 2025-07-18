@@ -101,6 +101,8 @@ export function CreateVenue({
 
     const pictureUrl = pictureFile ? URL.createObjectURL(pictureFile) : "";
 
+    console.log(slotsAvailable);
+
     return (
         <div className="creation-container">
             <Link to="/">

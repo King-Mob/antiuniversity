@@ -64,8 +64,6 @@ function prepareEvents(timeline: matrixEvent[], user: user | undefined, isAdmin:
         }
     });
 
-    console.log("events", events);
-
     return events.filter(
         (event) => (event.published && (event.approved || isAdmin)) || (user && event.creator === user.name)
     );

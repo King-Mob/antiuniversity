@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import "./App.css";
-import { type venue, type event, type user } from "./types";
+import { type venue, type event, type user, type day } from "./types";
 import { getImage, putEvent, redactEvent } from "./requests";
 
 export function Venue({ venue, user, isAdmin }: { venue: venue; user: user | undefined; isAdmin: boolean }) {
@@ -223,31 +223,64 @@ function Home({
 }) {
     const { VITE_SUBMISSIONS_OPEN } = import.meta.env;
 
+    const [dayActive, setDayActive] = useState(-1);
+
+    const days: day[] = [
+        { name: "Monday 13th October", date: new Date(1760310000000), events: [] },
+        { name: "Tuesday 14th October", date: new Date(1760396400000), events: [] },
+        { name: "Wednesday 15th October", date: new Date(1760482800000), events: [] },
+        { name: "Thursday 16th October", date: new Date(1760569200000), events: [] },
+        { name: "Friday 17th October", date: new Date(1760655600000), events: [] },
+        { name: "Saturday 18th October", date: new Date(1760742000000), events: [] },
+        { name: "Sunday 19th October", date: new Date(1760828400000), events: [] },
+    ];
+
+    events.forEach((event) => {
+        const eventStartSlot = event.slotsUsed && event.slotsUsed[0];
+
+        if (eventStartSlot) {
+            const eventStartTime = new Date(eventStartSlot);
+            const eventDay = days.find((day) => day.date.getDate() === eventStartTime.getDate());
+            eventDay?.events.push(event);
+        }
+    });
+
     return VITE_SUBMISSIONS_OPEN === "true" ? (
         <>
-            <h1>Antiuniversity Venues & Events</h1>
+            <h1>Antiuniversity Festival 2025</h1>
+            <h2>13th - 19th October</h2>
+            <p>Event submissions open: 20th July - 31st August</p>
+            <p>
+                View the schedule of events below, and go to <Link to="/instructions">Instructions</Link> to find out
+                how to register your own event!
+            </p>
             <div>
-                <h2>Venues:</h2>
-                {venues.map((venue) => (
-                    <Venue venue={venue} user={user} isAdmin={isAdmin} />
-                ))}
-                {user && (
-                    <Link to="/new/venue">
-                        <h2>Create venue</h2>
-                    </Link>
+                {days.map((day, dayIndex) =>
+                    dayIndex === dayActive ? (
+                        <div>
+                            <button onClick={() => setDayActive(-1)}>
+                                <h2>{day.name}</h2>
+                            </button>
+                            {day.events.map((event) => (
+                                <Event
+                                    event={event}
+                                    user={user}
+                                    isAdmin={isAdmin}
+                                    venues={venues}
+                                    loadEvents={loadEvents}
+                                    key={event.id}
+                                />
+                            ))}
+                            {day.events.length === 0 && <p>No events on this day</p>}
+                        </div>
+                    ) : (
+                        <div>
+                            <button onClick={() => setDayActive(dayIndex)}>
+                                <h2>{day.name}</h2>
+                            </button>
+                        </div>
+                    )
                 )}
-
-                <h2>Events:</h2>
-                {events.map((event) => (
-                    <Event
-                        event={event}
-                        user={user}
-                        isAdmin={isAdmin}
-                        venues={venues}
-                        loadEvents={loadEvents}
-                        key={event.id}
-                    />
-                ))}
                 {user && (
                     <Link to="/new/event">
                         <h2>Create event</h2>
