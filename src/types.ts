@@ -5,6 +5,7 @@ export type newVenue = {
     creator: string;
     capacity: number;
     slotsAvailable: number[];
+    picture: string;
 };
 
 export type venue = newVenue & {
@@ -19,6 +20,7 @@ export type newEvent = {
     creator: string;
     published: boolean;
     approved: boolean;
+    picture: string;
 };
 
 export type event = newEvent & {

@@ -3,11 +3,13 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router";
 import { useState, useEffect } from "react";
 import "./index.css";
+import UserHeader from "./UserHeader.tsx";
 import Home from "./Home.tsx";
 import Venue from "./Venue.tsx";
 import Event from "./Event.tsx";
 import User from "./User.tsx";
 import { CreateVenue, CreateEvent } from "./Create.tsx";
+import About from "./About.tsx";
 import { getEvents } from "./requests.ts";
 import {
     VENUE_EVENT,
@@ -93,18 +95,12 @@ function App() {
 
     return (
         <BrowserRouter>
+            <UserHeader user={user} setUser={setUser} />
             <Routes>
                 <Route
                     path="/"
                     element={
-                        <Home
-                            venues={venues}
-                            events={events}
-                            user={user}
-                            setUser={setUser}
-                            loadEvents={loadEvents}
-                            isAdmin={isAdmin}
-                        />
+                        <Home venues={venues} events={events} user={user} loadEvents={loadEvents} isAdmin={isAdmin} />
                     }
                 />
                 <Route path="/new">
@@ -117,6 +113,10 @@ function App() {
                 <Route path="/venue/:id" element={<Venue venues={venues} user={user} isAdmin={isAdmin} />} />
                 <Route path="/event/:id" element={<Event events={events} user={user} isAdmin={isAdmin} />} />
                 <Route path="/user/:id" element={<User events={events} />} />
+                <Route path="about" element={<About />} />
+                <Route path="contact" />
+                <Route path="venues" />
+                <Route path="instructions" />
             </Routes>
         </BrowserRouter>
     );

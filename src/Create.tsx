@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, type ReactElement } from "react";
 import { Link } from "react-router";
-import { postVenue, postEvent } from "./requests";
+import { postVenue, postEvent, postImage } from "./requests";
 import { type venue, type event, type user } from "./types";
 
 export function CreateVenue({
@@ -14,17 +14,31 @@ export function CreateVenue({
 }) {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
+    const [pictureFile, setPictureFile] = useState<File>();
     const [address, setAddress] = useState("");
     const [capacity, setCapacity] = useState(0);
     const [slotsAvailable, setSlotsAvailable] = useState<number[]>([]);
     const [created, setCreated] = useState(false);
 
+    async function uploadImage() {
+        if (pictureFile && user) {
+            const imageBuffer = await pictureFile.arrayBuffer();
+            const imageResponse = await postImage(pictureFile.name, imageBuffer, user.access_token);
+            const imageResult = await imageResponse.json();
+            return imageResult.content_uri;
+        }
+        return "";
+    }
+
     async function create() {
         if (user) {
+            const picture = await uploadImage();
+
             const response = await postVenue(
                 {
                     name,
                     description,
+                    picture,
                     address,
                     creator: user.name,
                     capacity,
@@ -57,16 +71,38 @@ export function CreateVenue({
 
     const midnight13thUTC = 1760310000000;
 
-    const slots: Date[] = [];
+    const days: ReactElement[][] = [
+        [<p className="day-heading">Monday 13th</p>],
+        [<p className="day-heading">Tuesday 14th</p>],
+        [<p className="day-heading">Wed 15th</p>],
+        [<p className="day-heading">Thursday 16th</p>],
+        [<p className="day-heading">Friday 17th</p>],
+        [<p className="day-heading">Saturday 18th</p>],
+        [<p className="day-heading">Sunday 19th</p>],
+    ];
 
-    for (let i = 0; i < 336; i++) {
-        slots.push(new Date(midnight13thUTC + i * 1000 * 60 * 30));
-    }
+    days.forEach((day, dayIndex) => {
+        for (let halfHourIndex = 0; halfHourIndex < 48; halfHourIndex++) {
+            const slot = new Date(midnight13thUTC + halfHourIndex * 1000 * 60 * 30 + dayIndex * 1000 * 60 * 60 * 24);
+            const slotOn = slotsAvailable.includes(slot.getTime());
 
-    console.log(slotsAvailable);
+            day.push(
+                <div className="slot-container">
+                    <button
+                        className={`slot-toggle ${slotOn ? "slot-selected" : "slot-unselected"}`}
+                        onClick={() => toggleSlot(slot)}
+                    >
+                        {slot.toTimeString().slice(0, 5)}
+                    </button>
+                </div>
+            );
+        }
+    });
+
+    const pictureUrl = pictureFile ? URL.createObjectURL(pictureFile) : "";
 
     return (
-        <div>
+        <div className="creation-container">
             <Link to="/">
                 <h2>Back</h2>
             </Link>
@@ -97,6 +133,19 @@ export function CreateVenue({
                         onChange={(e) => setDescription(e.target.value)}
                         placeholder="description"
                     ></input>
+                    <p>Picture:</p>
+                    {pictureFile && (
+                        <>
+                            <img src={pictureUrl} className="create-image" />
+                            <br />
+                        </>
+                    )}
+                    <input
+                        type="file"
+                        onChange={(e) => setPictureFile(e.target.files ? e.target.files[0] : undefined)}
+                        accept="image/png, image/jpeg, image/gif"
+                    />
+                    <br />
                     <input
                         type="text"
                         value={address}
@@ -108,25 +157,9 @@ export function CreateVenue({
                         value={capacity}
                         onChange={(e) => setCapacity(parseInt(e.target.value))}
                     ></input>
-                    <div className="slots-grid">
-                        <p>13th</p>
-                        <p>14th</p>
-                        <p>15th</p>
-                        <p>16th</p>
-                        <p>17th</p>
-                        <p>18th</p>
-                        <p>19th</p>
-                        {slots.map((slot) => (
-                            <div className="slot-container">
-                                <button
-                                    className={`slot-toggle ${
-                                        slotsAvailable.includes(slot.getTime()) ? "slot-selected" : ""
-                                    }`}
-                                    onClick={() => toggleSlot(slot)}
-                                >
-                                    {slot.toTimeString().slice(0, 5)}
-                                </button>
-                            </div>
+                    <div className="days-container">
+                        {days.map((day) => (
+                            <div>{day}</div>
                         ))}
                     </div>
                     <button onClick={create}>Create</button>
@@ -150,17 +183,31 @@ export function CreateEvent({
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [venueId, setVenueId] = useState("");
-    const [slotsUsed, setSlotsUsed] = useState([]);
+    const [pictureFile, setPictureFile] = useState<File>();
+    const [slotsUsed, setSlotsUsed] = useState<number[]>([]);
     const [created, setCreated] = useState(false);
     const [published, setPublished] = useState(false);
 
+    async function uploadImage() {
+        if (pictureFile && user) {
+            const imageBuffer = await pictureFile.arrayBuffer();
+            const imageResponse = await postImage(pictureFile.name, imageBuffer, user.access_token);
+            const imageResult = await imageResponse.json();
+            return imageResult.content_uri;
+        }
+        return "";
+    }
+
     async function create() {
         if (user) {
+            const picture = await uploadImage();
+
             const response = await postEvent(
                 {
                     name,
                     description,
                     venueId,
+                    picture,
                     slotsUsed,
                     creator: user.name,
                     published,
@@ -179,8 +226,59 @@ export function CreateEvent({
         }
     }
 
+    function toggleSlot(slot: Date) {
+        const slotIndex = slotsUsed.findIndex((slotUsed) => slotUsed === slot.getTime());
+        if (slotIndex >= 0) {
+            const newSlotsUsed = slotsUsed.slice(0, slotIndex).concat(slotsUsed.slice(slotIndex + 1));
+            setSlotsUsed(newSlotsUsed);
+        } else {
+            const newSlotsUsed = slotsUsed.concat(slot.getTime());
+            setSlotsUsed(newSlotsUsed);
+        }
+    }
+
+    const venue = venueId && venues.find((venue) => venue.id === venueId);
+
+    const slotsAvailable =
+        venue && venue.slotsAvailable.filter((slot) => !events.find((event) => event.slotsUsed?.includes(slot)));
+
+    console.log(slotsAvailable);
+
+    const days: ReactElement[][] = [
+        [<p className="day-heading">Monday 13th</p>],
+        [<p className="day-heading">Tuesday 14th</p>],
+        [<p className="day-heading">Wed 15th</p>],
+        [<p className="day-heading">Thursday 16th</p>],
+        [<p className="day-heading">Friday 17th</p>],
+        [<p className="day-heading">Saturday 18th</p>],
+        [<p className="day-heading">Sunday 19th</p>],
+    ];
+
+    if (slotsAvailable)
+        days.forEach((day, dayIndex) => {
+            slotsAvailable.forEach((slotTime) => {
+                const slot = new Date(slotTime);
+                const slotOn = slotsUsed.includes(slotTime);
+
+                console.log();
+                if (dayIndex === slot.getDay() - (1 % 7))
+                    day.push(
+                        <div className="slot-container">
+                            <button
+                                className={`slot-toggle ${slotOn ? "slot-selected" : "slot-unselected"}`}
+                                onClick={() => toggleSlot(slot)}
+                            >
+                                {slot.toTimeString().slice(0, 5)}
+                            </button>
+                        </div>
+                    );
+            });
+        });
+
+    const pictureUrl = pictureFile ? URL.createObjectURL(pictureFile) : "";
+
     return (
-        <div>
+        <div className="creation-container">
             <Link to="/">
                 <h2>Back</h2>
             </Link>
@@ -210,6 +308,19 @@ export function CreateEvent({
                         onChange={(e) => setDescription(e.target.value)}
                         placeholder="description"
                     ></input>
+                    <p>Picture:</p>
+                    {pictureFile && (
+                        <>
+                            <img src={pictureUrl} className="create-image" />
+                            <br />
+                        </>
+                    )}
+                    <input
+                        type="file"
+                        onChange={(e) => setPictureFile(e.target.files ? e.target.files[0] : undefined)}
+                        accept="image/png, image/jpeg, image/gif"
+                    />
+                    <br />
                     <select value={venueId} onChange={(e) => setVenueId(e.target.value)} name="venues">
                         <option value={""}>Choose venue</option>
                         {venues.map((venue) => (
@@ -217,7 +328,11 @@ export function CreateEvent({
                         ))}
                     </select>
                     <p>Select time slot </p>
-
+                    <div className="days-container">
+                        {days.map((day) => (
+                            <div>{day}</div>
+                        ))}
+                    </div>
                     <input
                         id="published"
                         type="checkbox"
