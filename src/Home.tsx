@@ -128,7 +128,7 @@ function Home({ venues, events, user }: { venues: venue[]; events: event[]; user
                     )
                 )}
                 {user && (
-                    <Link to="/new/event">
+                    <Link to="/event/new">
                         <h2>Create event</h2>
                     </Link>
                 )}
