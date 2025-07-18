@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import "./App.css";
 import { type venue, type event, type user, type day } from "./types";
-import { getImage, putEvent, redactEvent } from "./requests";
+import { getImage, redactEvent } from "./requests";
 
 export function Venue({ venue }: { venue: venue }) {
     const [imageSrc, setImageSrc] = useState("");
@@ -51,15 +51,7 @@ function Event({
     venues: venue[];
     loadEvents: () => void;
 }) {
-    const [editMode, setEditMode] = useState(false);
     const [deleteMode, setDeleteMode] = useState(false);
-    const [venueId, setVenueId] = useState(event.venueId);
-    const [name, setName] = useState(event.name);
-    const [description, setDescription] = useState(event.description);
-    const [picture, setPicture] = useState(event.picture);
-    const [slotsUsed, setSlotsUsed] = useState(event.slotsUsed);
-    const [published, setPublished] = useState(event.published);
-    const [approved, setApproved] = useState(event.approved);
     const [imageSrc, setImageSrc] = useState("");
 
     async function loadImage() {
@@ -82,114 +74,27 @@ function Event({
         }
     }
 
-    async function saveEvent() {
-        if (user) {
-            await putEvent(
-                {
-                    venueId,
-                    name,
-                    description,
-                    picture,
-                    slotsUsed,
-                    creator: event.creator,
-                    published,
-                    approved,
-                    organiserName: event.organiserName,
-                    organiserEmail: event.organiserEmail,
-                },
-                event.id,
-                user.access_token
-            );
-            setEditMode(false);
-            setSlotsUsed([]);
-            setPicture(event.picture);
-        }
-    }
-
-    const venue = venues.find((venue) => venue.id === venueId);
-    const time = slotsUsed?.[0] ? new Date(slotsUsed[0]).toLocaleString() : "";
+    const venue = venues.find((venue) => venue.id === event.venueId);
+    const time = event.slotsUsed?.[0] ? new Date(event.slotsUsed[0]).toLocaleString() : "";
 
     return (
         <div className="event">
-            {editMode ? (
-                <input type="text" value={name} onChange={(e) => setName(e.target.value)}></input>
-            ) : (
-                <Link to={`/event/${event.id}`}>
-                    <h3>{name}</h3>
-                </Link>
-            )}
+            <Link to={`/event/${event.id}`}>
+                <h3>{event.name}</h3>
+            </Link>
             <p>
                 Created by <Link to={`/user/${event.creator}`}>{event.creator}</Link>
             </p>
-            {venue &&
-                (editMode ? (
-                    <select value={venueId} onChange={(e) => setVenueId(e.target.value)} name="venues">
-                        <option value={""}>Choose venue</option>
-                        {venues.map((venue) => (
-                            <option value={venue.id}>{venue.name}</option>
-                        ))}
-                    </select>
-                ) : (
-                    <Link to={`/venue/${venue.id}`}>
-                        <p>{venue.name}</p>
-                    </Link>
-                ))}
-            {editMode ? (
-                <>
-                    <p>Time: {time}</p>{" "}
-                </>
-            ) : (
-                <p>Time: {time}</p>
+            {venue && (
+                <Link to={`/venue/${venue.id}`}>
+                    <p>{venue.name}</p>
+                </Link>
             )}
-            {editMode ? (
-                <>
-                    {" "}
-                    <br />{" "}
-                    <input type="text" value={description} onChange={(e) => setDescription(e.target.value)}></input>
-                </>
-            ) : (
-                <p>Description: {description}</p>
-            )}
+            <p>Time: {time}</p>
+            <p>Description: {event.description}</p>
             {imageSrc && <img src={imageSrc} />}
-            {editMode ? (
-                <>
-                    <input
-                        id="published"
-                        type="checkbox"
-                        checked={published}
-                        onChange={(e) => setPublished(e.target.checked)}
-                    ></input>
-                    <label htmlFor="published">Published</label>
-                </>
-            ) : (
-                <>{!published && <p>Not yet published</p>}</>
-            )}
-
-            {isAdmin ? (
-                editMode ? (
-                    <>
-                        <input
-                            id="approved"
-                            type="checkbox"
-                            checked={approved}
-                            onChange={(e) => setApproved(e.target.checked)}
-                        ></input>
-                        <label htmlFor="approved">Approved</label>
-                    </>
-                ) : (
-                    <p>{approved ? "Event approved" : "This event has not been approved"}</p>
-                )
-            ) : (
-                <>
-                    <p>{approved ? "Event approved" : "This event has not been approved"}</p>
-                </>
-            )}
-
-            {editMode && (
-                <div>
-                    <button onClick={saveEvent}>Save</button>
-                </div>
-            )}
+            <>{!event.published && <p>Not yet published</p>}</>
+            <p>{event.approved ? "Event approved" : "This event has not been approved"}</p>
             {deleteMode && (
                 <div>
                     <p>Are you sure you want to delete this event?</p>

@@ -1,6 +1,6 @@
 import { useState, useEffect, type ReactElement } from "react";
 import { useNavigate, useParams } from "react-router";
-import { putEvent, postImage } from "./requests";
+import { putEvent, postImage, getImage } from "./requests";
 import { type venue, type event, type user } from "./types";
 
 function EditEvent({
@@ -24,6 +24,7 @@ function EditEvent({
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [venueId, setVenueId] = useState("");
+    const [imageSrc, setImageSrc] = useState("");
     const [pictureFile, setPictureFile] = useState<File>();
     const [slotsUsed, setSlotsUsed] = useState<number[]>([]);
     const [published, setPublished] = useState(false);
@@ -31,7 +32,14 @@ function EditEvent({
     const [creator, setCreator] = useState("");
     const navigate = useNavigate();
 
-    useEffect(() => {
+    async function loadImage(url: string) {
+        const pictureResponse = await getImage(url.replace("mxc://", ""));
+        const pictureResult = await pictureResponse.blob();
+        const imageUrl = window.URL.createObjectURL(pictureResult);
+        setImageSrc(imageUrl);
+    }
+
+    function loadEvent() {
         const existingEvent = existingEvents.find((event) => event.id === id);
         if (existingEvent) {
             setOrganiserName(existingEvent.organiserName);
@@ -45,8 +53,15 @@ function EditEvent({
             setPublished(existingEvent.published);
             setApproved(existingEvent.approved);
             setCreator(existingEvent.creator);
+            if (existingEvent.picture) {
+                loadImage(existingEvent.picture);
+            }
         }
-    }, [id]);
+    }
+
+    useEffect(() => {
+        loadEvent();
+    }, [existingEvents]);
 
     const isValid = organiserName && organiserEmail && name && description && venueId && slotsUsed;
 
@@ -180,11 +195,18 @@ function EditEvent({
                     placeholder="description"
                 ></input>
                 <p>Picture:</p>
-                {pictureFile && (
+                {pictureFile ? (
                     <>
                         <img src={pictureUrl} className="create-image" />
                         <br />
                     </>
+                ) : (
+                    imageSrc && (
+                        <>
+                            <img src={imageSrc} className="create-image" />
+                            <br />
+                        </>
+                    )
                 )}
                 <input
                     type="file"
