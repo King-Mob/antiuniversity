@@ -4,7 +4,7 @@ import "./App.css";
 import { type venue, type event, type user } from "./types";
 import { getImage, putEvent, redactEvent } from "./requests";
 
-function Venue({ venue, user, isAdmin }: { venue: venue; user: user | undefined; isAdmin: boolean }) {
+export function Venue({ venue, user, isAdmin }: { venue: venue; user: user | undefined; isAdmin: boolean }) {
     const [imageSrc, setImageSrc] = useState("");
 
     async function loadImage() {

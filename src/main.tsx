@@ -10,6 +10,9 @@ import Event from "./Event.tsx";
 import User from "./User.tsx";
 import { CreateVenue, CreateEvent } from "./Create.tsx";
 import About from "./About.tsx";
+import Contact from "./Contact.tsx";
+import Instructions from "./Instructions.tsx";
+import Venues from "./Venues.tsx";
 import { getEvents } from "./requests.ts";
 import {
     VENUE_EVENT,
@@ -114,9 +117,9 @@ function App() {
                 <Route path="/event/:id" element={<Event events={events} user={user} isAdmin={isAdmin} />} />
                 <Route path="/user/:id" element={<User events={events} />} />
                 <Route path="about" element={<About />} />
-                <Route path="contact" />
-                <Route path="venues" />
-                <Route path="instructions" />
+                <Route path="contact" element={<Contact />} />
+                <Route path="venues" element={<Venues venues={venues} user={user} isAdmin={isAdmin} />} />
+                <Route path="instructions" element={<Instructions />} />
             </Routes>
         </BrowserRouter>
     );

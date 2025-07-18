@@ -188,6 +188,8 @@ export function CreateEvent({
     const [created, setCreated] = useState(false);
     const [published, setPublished] = useState(false);
 
+    const isValid = name && description && slotsUsed;
+
     async function uploadImage() {
         if (pictureFile && user) {
             const imageBuffer = await pictureFile.arrayBuffer();
@@ -199,7 +201,7 @@ export function CreateEvent({
     }
 
     async function create() {
-        if (user) {
+        if (user && isValid) {
             const picture = await uploadImage();
 
             const response = await postEvent(
@@ -341,7 +343,9 @@ export function CreateEvent({
                     ></input>
                     <label htmlFor="published">Ready to publish (leave unchecked to save as draft)</label>
                     <br />
-                    <button onClick={create}>Create</button>
+                    <button onClick={create} disabled={!isValid}>
+                        Create
+                    </button>
                 </>
             )}
         </div>
