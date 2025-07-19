@@ -34,6 +34,7 @@ function Venue({
 
     const slotsAvailable =
         venue &&
+        venue.slotsAvailable &&
         venue.slotsAvailable.filter((slot) => !existingEvents.find((event) => event.slotsUsed?.includes(slot)));
 
     const days: ReactElement[][] = [
