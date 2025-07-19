@@ -34,9 +34,11 @@ function EditVenue({ venues, loadEvents, user }: { venues: venue[]; loadEvents: 
             setAccessibilityInformation(venue.accessibilityInformation);
             setAddress(venue.address);
             setCapacity(venue.capacity);
-            setSlotsAvailable(venue.slotsAvailable);
-            setPicture(venue.picture);
-            loadImage(venue.picture);
+            setSlotsAvailable(venue.slotsAvailable || []);
+            if (venue.picture) {
+                setPicture(venue.picture);
+                loadImage(venue.picture);
+            }
         }
     }
 
