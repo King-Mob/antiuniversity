@@ -81,7 +81,9 @@ function CreateEvent({
 
     const slotsAvailable =
         venue &&
-        venue.slotsAvailable.filter((slot) => !existingEvents.find((event) => event.slotsUsed?.includes(slot)));
+        venue.slotsAvailable.filter(
+            (slot) => !existingEvents.find((event) => event.venueId === venue.id && event.slotsUsed?.includes(slot))
+        );
 
     const days: ReactElement[][] = [
         [<p className="day-heading">Monday 13th</p>],

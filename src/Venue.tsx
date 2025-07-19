@@ -32,10 +32,14 @@ function Venue({
         loadImage();
     }, [venue]);
 
+    //this needs to filter for events that have the same venue id
+
     const slotsAvailable =
         venue &&
         venue.slotsAvailable &&
-        venue.slotsAvailable.filter((slot) => !existingEvents.find((event) => event.slotsUsed?.includes(slot)));
+        venue.slotsAvailable.filter(
+            (slot) => !existingEvents.find((event) => event.venueId === venue.id && event.slotsUsed?.includes(slot))
+        );
 
     const days: ReactElement[][] = [
         [<p className="day-heading">Monday 13th</p>],

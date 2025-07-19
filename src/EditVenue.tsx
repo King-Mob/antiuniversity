@@ -1,6 +1,6 @@
 import { useState, useEffect, type ReactElement } from "react";
 import { useNavigate, useParams } from "react-router";
-import { putVenue, postImage, getImage } from "./requests";
+import { putVenue, postImage, getImage, redactEvent } from "./requests";
 import { type user, type venue } from "./types";
 
 function EditVenue({ venues, loadEvents, user }: { venues: venue[]; loadEvents: () => void; user: user | undefined }) {
@@ -14,6 +14,7 @@ function EditVenue({ venues, loadEvents, user }: { venues: venue[]; loadEvents: 
     const [address, setAddress] = useState("");
     const [capacity, setCapacity] = useState(0);
     const [slotsAvailable, setSlotsAvailable] = useState<number[]>([]);
+    const [deleteMode, setDeleteMode] = useState(false);
     const navigate = useNavigate();
     const { id } = useParams();
 
@@ -53,7 +54,7 @@ function EditVenue({ venues, loadEvents, user }: { venues: venue[]; loadEvents: 
         return "";
     }
 
-    async function create() {
+    async function save() {
         if (user && id) {
             const pictureUrl = pictureFile ? await uploadImage() : picture;
 
@@ -81,6 +82,13 @@ function EditVenue({ venues, loadEvents, user }: { venues: venue[]; loadEvents: 
                 setSlotsAvailable([]);
                 loadEvents();
             }
+        }
+    }
+
+    async function deleteVenue() {
+        if (user && id) {
+            await redactEvent(id, user.access_token);
+            loadEvents();
         }
     }
 
@@ -164,7 +172,17 @@ function EditVenue({ venues, loadEvents, user }: { venues: venue[]; loadEvents: 
                     <div>{day}</div>
                 ))}
             </div>
-            <button onClick={create}>Save</button>
+            <button onClick={save}>Save</button>
+            <br />
+            <br />
+            {deleteMode ? (
+                <>
+                    <button onClick={deleteVenue}>Delete</button>
+                    <button onClick={() => setDeleteMode(false)}>Cancel</button>
+                </>
+            ) : (
+                <button onClick={() => setDeleteMode(true)}>Delete Venue</button>
+            )}
         </div>
     );
 }

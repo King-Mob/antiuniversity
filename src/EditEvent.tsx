@@ -131,7 +131,9 @@ function EditEvent({
         venue &&
         venue.slotsAvailable.filter(
             (slot) =>
-                !existingEvents.filter((event) => event.id !== id).find((event) => event.slotsUsed?.includes(slot))
+                !existingEvents
+                    .filter((event) => event.id !== id)
+                    .find((event) => event.venueId === venue.id && event.slotsUsed?.includes(slot))
         );
 
     const days: ReactElement[][] = [
