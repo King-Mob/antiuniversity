@@ -6,7 +6,7 @@ import { getImage } from "./requests";
 export function formatTime(event: event) {
     if (!event.slotsUsed[0]) return "no time scheduled";
 
-    const startTimeOptions = {
+    const startTimeOptions: Intl.DateTimeFormatOptions = {
         weekday: "long",
         month: "long",
         day: "numeric",
@@ -14,7 +14,7 @@ export function formatTime(event: event) {
         minute: "numeric",
     };
 
-    const endTimeOptions = {
+    const endTimeOptions: Intl.DateTimeFormatOptions = {
         hour: "numeric",
         minute: "numeric",
     };
