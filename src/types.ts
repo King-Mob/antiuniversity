@@ -53,3 +53,4 @@ export type day = {
 export const VENUE_EVENT = "antiuniversity.venue.event";
 export const EVENT_EVENT = "antiuniversity.event.event";
 export const EVENT_UPDATED_EVENT = "antiuniversity.event.updated_event";
+export const VENUE_UPDATED_EVENT = "antiuniversity.venue.updated_event";

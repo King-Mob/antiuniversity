@@ -8,6 +8,7 @@ import Home from "./Home.tsx";
 import Venue from "./Venue.tsx";
 import Event from "./Event.tsx";
 import EditEvent from "./EditEvent.tsx";
+import EditVenue from "./EditVenue.tsx";
 import User from "./User.tsx";
 import CreateVenue from "./CreateVenue.tsx";
 import CreateEvent from "./CreateEvent.tsx";
@@ -24,6 +25,7 @@ import {
     type venue,
     type event,
     type user,
+    VENUE_UPDATED_EVENT,
 } from "./types.ts";
 
 function justLocalPart(username: string) {
@@ -31,9 +33,36 @@ function justLocalPart(username: string) {
 }
 
 function prepareVenues(timeline: matrixEvent[]) {
-    return timeline
-        .filter((event) => event.type === VENUE_EVENT)
-        .map((event) => ({ ...event.content, id: event.event_id, creator: justLocalPart(event.sender) } as venue));
+    let venues: venue[] = [];
+
+    timeline.forEach((matrixEvent) => {
+        if (matrixEvent.type === VENUE_EVENT && matrixEvent.content.name) {
+            venues.push({
+                ...matrixEvent.content,
+                id: matrixEvent.event_id,
+                creator: justLocalPart(matrixEvent.sender),
+            } as venue);
+        }
+        if (matrixEvent.type === VENUE_UPDATED_EVENT) {
+            const venueToUpdatePosition = venues.findIndex((event) => event.id === matrixEvent.content.old_venue_id);
+            const oldVenue = venues[venueToUpdatePosition];
+
+            if (oldVenue) {
+                venues = venues
+                    .slice(0, venueToUpdatePosition)
+                    .concat([
+                        {
+                            ...matrixEvent.content,
+                            id: matrixEvent.content.old_venue_id,
+                            creator: oldVenue.creator,
+                        },
+                    ])
+                    .concat(venues.slice(venueToUpdatePosition + 1));
+            }
+        }
+    });
+
+    return venues;
 }
 
 function prepareEvents(timeline: matrixEvent[], user: user | undefined, isAdmin: boolean) {
@@ -104,10 +133,20 @@ function App() {
                 <Route path="/" element={<Home venues={venues} events={events} user={user} />} />
                 <Route path="/venue">
                     <Route path="new" element={<CreateVenue loadEvents={loadEvents} user={user} />} />
-                    <Route path=":id" element={<Venue venues={venues} user={user} isAdmin={isAdmin} />} />
+                    <Route
+                        path=":id"
+                        element={<Venue venues={venues} existingEvents={draftEvents} user={user} isAdmin={isAdmin} />}
+                    />
+                    <Route
+                        path=":id/edit"
+                        element={<EditVenue venues={venues} loadEvents={loadEvents} user={user} />}
+                    />
                 </Route>
                 <Route path="/event">
-                    <Route path=":id" element={<Event events={events} user={user} isAdmin={isAdmin} />} />
+                    <Route
+                        path=":id"
+                        element={<Event events={events} venues={venues} user={user} isAdmin={isAdmin} />}
+                    />
                     <Route
                         path=":id/edit"
                         element={

@@ -169,3 +169,24 @@ p {
 textarea {
     font-family: sans-serif;
 }
+
+.venue-container {
+    margin-top: 20px;
+}
+
+.venue-image {
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+}
+
+.event-container {
+    margin-top: 20px;
+}
+
+.slot-text {
+    border: solid 1px black;
+    background-color: var(--white-translucent);
+    padding: 10px 20px;
+    margin: 5px 0px;
+}

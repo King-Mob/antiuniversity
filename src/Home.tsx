@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import "./App.css";
 import { type venue, type event, type user, type day } from "./types";
 import { getImage } from "./requests";
+import { formatTime } from "./Event";
 
 function Event({ event, venues }: { event: event; venues: venue[] }) {
     const [imageSrc, setImageSrc] = useState("");
@@ -21,7 +22,7 @@ function Event({ event, venues }: { event: event; venues: venue[] }) {
     }, []);
 
     const venue = venues.find((venue) => venue.id === event.venueId);
-    const time = event.slotsUsed?.[0] ? new Date(event.slotsUsed[0]).toLocaleString() : "";
+    const time = formatTime(event);
 
     return (
         <div className="event">

@@ -58,7 +58,7 @@ function Venues({ venues, user }: { venues: venue[]; user: user | undefined }) {
                 <Venue venue={venue} />
             ))}
             {user && (
-                <Link to="/new/venue">
+                <Link to="/venue/new">
                     <h2>Create venue</h2>
                 </Link>
             )}

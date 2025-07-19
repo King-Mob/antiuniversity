@@ -25,6 +25,7 @@ function EditEvent({
     const [description, setDescription] = useState("");
     const [venueId, setVenueId] = useState("");
     const [imageSrc, setImageSrc] = useState("");
+    const [picture, setPicture] = useState("");
     const [pictureFile, setPictureFile] = useState<File>();
     const [slotsUsed, setSlotsUsed] = useState<number[]>([]);
     const [published, setPublished] = useState(false);
@@ -55,6 +56,7 @@ function EditEvent({
             setApproved(existingEvent.approved);
             setCreator(existingEvent.creator);
             if (existingEvent.picture) {
+                setPicture(existingEvent.picture);
                 loadImage(existingEvent.picture);
             }
         }
@@ -78,14 +80,14 @@ function EditEvent({
 
     async function save() {
         if (id && user && isValid) {
-            const picture = await uploadImage();
+            const pictureUrl = pictureFile ? await uploadImage() : picture;
 
             const response = await putEvent(
                 {
                     venueId,
                     name,
                     description,
-                    picture,
+                    picture: pictureUrl,
                     slotsUsed,
                     creator,
                     published,

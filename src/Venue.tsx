@@ -1,18 +1,82 @@
 import { useParams, Link } from "react-router";
-import { type venue, type user } from "./types";
+import { useState, useEffect, type ReactElement } from "react";
+import { type venue, type event, type user } from "./types";
+import { getImage } from "./requests";
 
-function Venue({ venues, user, isAdmin }: { venues: venue[]; user: user | undefined; isAdmin: boolean }) {
+function Venue({
+    venues,
+    existingEvents,
+    user,
+    isAdmin,
+}: {
+    venues: venue[];
+    existingEvents: event[];
+    user: user | undefined;
+    isAdmin: boolean;
+}) {
     const { id } = useParams();
+    const [imageSrc, setImageSrc] = useState("");
 
     const venue = venues.find((venue) => venue.id === id);
 
+    async function loadImage() {
+        if (venue && venue.picture) {
+            const pictureResponse = await getImage(venue.picture.replace("mxc://", ""));
+            const pictureResult = await pictureResponse.blob();
+            const imageUrl = window.URL.createObjectURL(pictureResult);
+            setImageSrc(imageUrl);
+        }
+    }
+
+    useEffect(() => {
+        loadImage();
+    }, [venue]);
+
+    const slotsAvailable =
+        venue &&
+        venue.slotsAvailable.filter((slot) => !existingEvents.find((event) => event.slotsUsed?.includes(slot)));
+
+    const days: ReactElement[][] = [
+        [<p className="day-heading">Monday 13th</p>],
+        [<p className="day-heading">Tuesday 14th</p>],
+        [<p className="day-heading">Wed 15th</p>],
+        [<p className="day-heading">Thursday 16th</p>],
+        [<p className="day-heading">Friday 17th</p>],
+        [<p className="day-heading">Saturday 18th</p>],
+        [<p className="day-heading">Sunday 19th</p>],
+    ];
+
+    if (slotsAvailable)
+        days.forEach((day, dayIndex) => {
+            slotsAvailable.forEach((slotTime) => {
+                const slot = new Date(slotTime);
+
+                if (dayIndex === slot.getDay() - (1 % 7))
+                    day.push(
+                        <div className="slot-container">
+                            <p className="slot-text">{slot.toTimeString().slice(0, 5)}</p>
+                        </div>
+                    );
+            });
+        });
+
     return venue ? (
-        <div>
+        <div className="venue-container">
+            <img src={imageSrc || "/reader.svg"} className="venue-image" />
             <h1>Venue: {venue.name}</h1>
-            <p>
-                Creator <Link to={`/user/${venue.creator}`}>{venue.creator}</Link>
-            </p>
+            <p>Address: {venue.address}</p>
             <p>Capacity: {venue.capacity}</p>
+            <p>Accessibility: {venue.accessibilityInformation}</p>
+            <p>{venue.otherInformation}</p>
+            <p>Times available:</p>
+            <div className="days-container">
+                {days.map((day) => (
+                    <div>{day}</div>
+                ))}
+            </div>
+            <p>
+                Created by <Link to={`/user/${venue.creator}`}>{venue.creator}</Link>
+            </p>
             {(isAdmin || (user && user.name === venue.creator)) && (
                 <Link to={`/venue/${id}/edit`}>
                     <p>Edit venue</p>

@@ -1,17 +1,47 @@
-import { useState, type ReactElement } from "react";
-import { useNavigate } from "react-router";
-import { postVenue, postImage } from "./requests";
-import { type user } from "./types";
+import { useState, useEffect, type ReactElement } from "react";
+import { useNavigate, useParams } from "react-router";
+import { putVenue, postImage, getImage } from "./requests";
+import { type user, type venue } from "./types";
 
-function CreateVenue({ loadEvents, user }: { loadEvents: () => void; user: user | undefined }) {
+function EditVenue({ venues, loadEvents, user }: { venues: venue[]; loadEvents: () => void; user: user | undefined }) {
     const [name, setName] = useState("");
+    const [creator, setCreator] = useState("");
     const [otherInformation, setOtherInformation] = useState("");
     const [accessibilityInformation, setAccessibilityInformation] = useState("");
+    const [imageSrc, setImageSrc] = useState("");
+    const [picture, setPicture] = useState("");
     const [pictureFile, setPictureFile] = useState<File>();
     const [address, setAddress] = useState("");
     const [capacity, setCapacity] = useState(0);
     const [slotsAvailable, setSlotsAvailable] = useState<number[]>([]);
     const navigate = useNavigate();
+    const { id } = useParams();
+
+    async function loadImage(url: string) {
+        const pictureResponse = await getImage(url.replace("mxc://", ""));
+        const pictureResult = await pictureResponse.blob();
+        const imageUrl = window.URL.createObjectURL(pictureResult);
+        setImageSrc(imageUrl);
+    }
+
+    function loadVenue() {
+        const venue = venues.find((venue) => venue.id === id);
+        if (venue) {
+            setName(venue.name);
+            setCreator(venue.creator);
+            setOtherInformation(venue.otherInformation);
+            setAccessibilityInformation(venue.accessibilityInformation);
+            setAddress(venue.address);
+            setCapacity(venue.capacity);
+            setSlotsAvailable(venue.slotsAvailable);
+            setPicture(venue.picture);
+            loadImage(venue.picture);
+        }
+    }
+
+    useEffect(() => {
+        loadVenue();
+    }, [venues]);
 
     async function uploadImage() {
         if (pictureFile && user) {
@@ -24,24 +54,25 @@ function CreateVenue({ loadEvents, user }: { loadEvents: () => void; user: user 
     }
 
     async function create() {
-        if (user) {
-            const picture = await uploadImage();
+        if (user && id) {
+            const pictureUrl = pictureFile ? await uploadImage() : picture;
 
-            const response = await postVenue(
+            const response = await putVenue(
                 {
                     name,
                     otherInformation,
                     accessibilityInformation,
-                    picture,
+                    picture: pictureUrl,
                     address,
-                    creator: user.name,
+                    creator,
                     capacity,
                     slotsAvailable,
                 },
+                id,
                 user.access_token
             );
             if (response) {
-                navigate(`/venue/${response.event_id}`);
+                navigate(`/venue/${id}`);
                 setName("");
                 setOtherInformation("");
                 setAccessibilityInformation("");
@@ -98,7 +129,7 @@ function CreateVenue({ loadEvents, user }: { loadEvents: () => void; user: user 
 
     return (
         <div className="creation-container">
-            <h1>New Venue</h1>
+            <h1>Editing Venue</h1>
             <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="name"></input>
             <input
                 type="text"
@@ -113,12 +144,7 @@ function CreateVenue({ loadEvents, user }: { loadEvents: () => void; user: user 
                 placeholder="accessibility information"
             ></input>
             <p>Picture:</p>
-            {pictureFile && (
-                <>
-                    <img src={pictureUrl} className="create-image" />
-                    <br />
-                </>
-            )}
+            <img src={pictureUrl || imageSrc} className="create-image" />
             <input
                 type="file"
                 onChange={(e) => setPictureFile(e.target.files ? e.target.files[0] : undefined)}
@@ -138,9 +164,9 @@ function CreateVenue({ loadEvents, user }: { loadEvents: () => void; user: user 
                     <div>{day}</div>
                 ))}
             </div>
-            <button onClick={create}>Create</button>
+            <button onClick={create}>Save</button>
         </div>
     );
 }
 
-export default CreateVenue;
+export default EditVenue;
