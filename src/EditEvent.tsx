@@ -255,17 +255,18 @@ function EditEvent({
                 <label htmlFor="published">Ready to publish (leave unchecked to save as draft)</label>
                 <br />
                 {!approved && <p>Event awaiting approval, will be publically visible soon</p>}
-                {isAdmin && approved ? (
-                    <>
-                        <button onClick={() => setApproved(false)}>Unapprove</button>
-                        <p>Event will be approved when saved</p>
-                    </>
-                ) : (
-                    <>
-                        <button onClick={() => setApproved(true)}>Approve</button>
-                        <p>Event will be unapproved when saved</p>
-                    </>
-                )}
+                {isAdmin &&
+                    (approved ? (
+                        <>
+                            <button onClick={() => setApproved(false)}>Unapprove</button>
+                            <p>Event will be approved when saved</p>
+                        </>
+                    ) : (
+                        <>
+                            <button onClick={() => setApproved(true)}>Approve</button>
+                            <p>Event will be unapproved when saved</p>
+                        </>
+                    ))}
                 <button onClick={save} disabled={!isValid}>
                     Save
                 </button>
