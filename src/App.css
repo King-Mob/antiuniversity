@@ -86,6 +86,8 @@
     width: 100%;
     max-width: 800px;
     margin-bottom: 20px;
+    background-color: var(--white-translucent);
+    padding: 20px;
 }
 
 .create-image {
@@ -140,6 +142,8 @@ p {
 
 #title {
     font-size: 30px;
+    background-color: var(--white-translucent);
+    padding: 20px;
 }
 
 .markdown-content {
@@ -172,6 +176,8 @@ textarea {
 
 .venue-container {
     margin-top: 20px;
+    background-color: var(--white-translucent);
+    padding: 20px;
 }
 
 .venue-image {
@@ -182,6 +188,8 @@ textarea {
 
 .event-container {
     margin-top: 20px;
+    background-color: var(--white-translucent);
+    padding: 20px;
 }
 
 .slot-text {
@@ -189,4 +197,24 @@ textarea {
     background-color: var(--white-translucent);
     padding: 10px 20px;
     margin: 5px 0px;
+}
+
+.create-link {
+    background-color: var(--white-translucent);
+    padding: 20px;
+}
+
+.backed-text {
+    background-color: var(--white-translucent);
+    padding: 20px;
+}
+
+.backed-text-container {
+    background-color: var(--white-translucent);
+    width: 100%;
+    max-width: 800px;
+}
+
+.indent {
+    padding: 0px 20px;
 }

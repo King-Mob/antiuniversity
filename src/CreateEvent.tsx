@@ -121,7 +121,7 @@ function CreateEvent({
         <div className="creation-container">
             <h1>Create New Event</h1>
             <>
-                <div className="markdown-content">
+                <div>
                     <p>This is where you register your Antiuniversity event.</p>
                     <p>
                         {" "}

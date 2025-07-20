@@ -69,11 +69,13 @@ function Home({ venues, events, user }: { venues: venue[]; events: event[]; user
 
     return VITE_SUBMISSIONS_OPEN === "true" ? (
         <>
-            <p>Event submissions open: 20th July - 31st August</p>
-            <p>
-                View the schedule of events below, and go to <Link to="/instructions">Instructions</Link> to find out
-                how to register your own event!
-            </p>
+            <div className="backed-text-container">
+                <p className="indent">Event submissions open: 20th July - 31st August</p>
+                <p className="indent">
+                    View the schedule of events below, and go to <Link to="/instructions">Instructions</Link> to find
+                    out how to register your own event!
+                </p>
+            </div>
             <div className="day-container">
                 {days.map((day, dayIndex) =>
                     dayIndex === dayActive ? (
@@ -84,7 +86,7 @@ function Home({ venues, events, user }: { venues: venue[]; events: event[]; user
                             {day.events.map((event) => (
                                 <Event event={event} venues={venues} key={event.id} />
                             ))}
-                            {day.events.length === 0 && <p>No events on this day</p>}
+                            {day.events.length === 0 && <p className="backed-text">No events on this day</p>}
                         </>
                     ) : (
                         <>
@@ -96,7 +98,7 @@ function Home({ venues, events, user }: { venues: venue[]; events: event[]; user
                 )}
                 {user && (
                     <Link to="/event/new">
-                        <h2>Create event</h2>
+                        <h2 className="create-link">Create event</h2>
                     </Link>
                 )}
             </div>
