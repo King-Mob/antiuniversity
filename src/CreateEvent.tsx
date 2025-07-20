@@ -88,7 +88,7 @@ function CreateEvent({
     const days: ReactElement[][] = [
         [<p className="day-heading">Monday 13th</p>],
         [<p className="day-heading">Tuesday 14th</p>],
-        [<p className="day-heading">Wed 15th</p>],
+        [<p className="day-heading">Wednesday 15th</p>],
         [<p className="day-heading">Thursday 16th</p>],
         [<p className="day-heading">Friday 17th</p>],
         [<p className="day-heading">Saturday 18th</p>],

@@ -59,6 +59,9 @@ function EditEvent({
                 setPicture(existingEvent.picture);
                 loadImage(existingEvent.picture);
             }
+            if (!user || (user.name !== existingEvent.creator && !isAdmin)) {
+                navigate(`/event/${id}`);
+            }
         }
     }
 
@@ -139,7 +142,7 @@ function EditEvent({
     const days: ReactElement[][] = [
         [<p className="day-heading">Monday 13th</p>],
         [<p className="day-heading">Tuesday 14th</p>],
-        [<p className="day-heading">Wed 15th</p>],
+        [<p className="day-heading">Wednesday 15th</p>],
         [<p className="day-heading">Thursday 16th</p>],
         [<p className="day-heading">Friday 17th</p>],
         [<p className="day-heading">Saturday 18th</p>],
@@ -200,12 +203,13 @@ function EditEvent({
                 ></input>
                 <h2>Event Information</h2>
                 <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="name"></input>
-                <input
-                    type="text"
+                <textarea
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    placeholder="description"
-                ></input>
+                    placeholder="Description"
+                    rows={3}
+                    cols={33}
+                ></textarea>
                 <p>Picture:</p>
                 {pictureFile ? (
                     <>

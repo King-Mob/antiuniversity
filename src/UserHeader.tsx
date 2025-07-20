@@ -83,19 +83,41 @@ function UserHeader({ user, setUser }: { user: user | undefined; setUser: (user:
                     <p>Contact</p>
                 </Link>
             </div>
-            {user ? (
-                <>
-                    <p>
-                        Logged in as <Link to={`/user/${user.name}`}>{user.name}</Link>
-                    </p>
-                    <button onClick={logOut}>Log out</button>
-                </>
-            ) : register ? (
-                registrationLoading ? (
+            <div className="login-container">
+                {user ? (
                     <>
-                        <p>Registration in progress...</p>
+                        <p className="login-text">
+                            Logged in as <Link to={`/user/${user.name}`}>{user.name}</Link>
+                        </p>
+                        <button onClick={logOut}>Log out</button>
                     </>
-                ) : (
+                ) : register ? (
+                    registrationLoading ? (
+                        <>
+                            <p className="login-text">Registration in progress...</p>
+                        </>
+                    ) : (
+                        <>
+                            <input
+                                type="text"
+                                placeholder="username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                            ></input>
+                            <input
+                                type="password"
+                                placeholder="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            ></input>
+                            <br />
+                            <button disabled={username.length < 1 || password.length < 1} onClick={tryRegister}>
+                                {" "}
+                                Register
+                            </button>
+                        </>
+                    )
+                ) : login ? (
                     <>
                         <input
                             type="text"
@@ -110,38 +132,18 @@ function UserHeader({ user, setUser }: { user: user | undefined; setUser: (user:
                             onChange={(e) => setPassword(e.target.value)}
                         ></input>
                         <br />
-                        <button disabled={username.length < 1 || password.length < 1} onClick={tryRegister}>
+                        <button disabled={username.length < 1 || password.length < 1} onClick={tryLogin}>
                             {" "}
-                            Register
+                            Login
                         </button>
                     </>
-                )
-            ) : login ? (
-                <>
-                    <input
-                        type="text"
-                        placeholder="username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    ></input>
-                    <input
-                        type="password"
-                        placeholder="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    ></input>
-                    <br />
-                    <button disabled={username.length < 1 || password.length < 1} onClick={tryLogin}>
-                        {" "}
-                        Login
-                    </button>
-                </>
-            ) : (
-                <div id="user-button-container">
-                    <button onClick={() => setRegister(true)}>Register</button>
-                    <button onClick={() => setLogin(true)}>Log in</button>
-                </div>
-            )}
+                ) : (
+                    <div id="user-button-container">
+                        <button onClick={() => setRegister(true)}>Register</button>
+                        <button onClick={() => setLogin(true)}>Log in</button>
+                    </div>
+                )}
+            </div>
             {error && <p>{error}</p>}
         </>
     );

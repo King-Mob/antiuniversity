@@ -69,7 +69,7 @@ function CreateVenue({ loadEvents, user }: { loadEvents: () => void; user: user 
     const days: ReactElement[][] = [
         [<p className="day-heading">Monday 13th</p>],
         [<p className="day-heading">Tuesday 14th</p>],
-        [<p className="day-heading">Wed 15th</p>],
+        [<p className="day-heading">Wednesday 15th</p>],
         [<p className="day-heading">Thursday 16th</p>],
         [<p className="day-heading">Friday 17th</p>],
         [<p className="day-heading">Saturday 18th</p>],
@@ -131,7 +131,14 @@ function CreateVenue({ loadEvents, user }: { loadEvents: () => void; user: user 
                 onChange={(e) => setAddress(e.target.value)}
                 placeholder="address (include postcode)"
             ></input>
-            <input type="number" value={capacity} onChange={(e) => setCapacity(parseInt(e.target.value))}></input>
+            <br />
+            <label htmlFor="capacity">Capacity: </label>
+            <input
+                id="capacity"
+                type="number"
+                value={capacity}
+                onChange={(e) => setCapacity(parseInt(e.target.value))}
+            ></input>
             <p>Time slots available [choose half hour slots within the week 13th-19th October]</p>
             <div className="days-container">
                 {days.map((day) => (

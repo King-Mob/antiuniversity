@@ -84,7 +84,7 @@
 
 .creation-container {
     width: 100%;
-    max-width: 800px;
+    max-width: 760px;
     margin-bottom: 20px;
     background-color: var(--white-translucent);
     padding: 20px;
@@ -102,7 +102,6 @@
     max-width: 800px;
     justify-content: space-evenly;
     background-color: var(--white-translucent);
-    padding: 0px 5px;
 }
 
 .day-button {
@@ -129,6 +128,7 @@
     width: 300px;
     height: 300px;
     object-fit: cover;
+    max-width: 50%;
 }
 
 .event-right {
@@ -143,7 +143,9 @@ p {
 #title {
     font-size: 30px;
     background-color: var(--white-translucent);
-    padding: 20px;
+    padding: 20px 0px;
+    width: 100%;
+    max-width: 800px;
 }
 
 .markdown-content {
@@ -184,6 +186,7 @@ textarea {
     width: 300px;
     height: 300px;
     object-fit: cover;
+    max-width: 50%;
 }
 
 .event-container {
@@ -210,6 +213,7 @@ textarea {
 }
 
 .backed-text-container {
+    margin-top: 20px;
     background-color: var(--white-translucent);
     width: 100%;
     max-width: 800px;
@@ -217,4 +221,13 @@ textarea {
 
 .indent {
     padding: 0px 20px;
+}
+
+.login-container {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.login-text {
+    margin-top: 0px;
 }

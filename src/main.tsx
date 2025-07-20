@@ -139,7 +139,7 @@ function App() {
                     />
                     <Route
                         path=":id/edit"
-                        element={<EditVenue venues={venues} loadEvents={loadEvents} user={user} />}
+                        element={<EditVenue venues={venues} loadEvents={loadEvents} user={user} isAdmin={isAdmin} />}
                     />
                 </Route>
                 <Route path="/event">
