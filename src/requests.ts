@@ -1,4 +1,4 @@
-import { type newVenue, type newEvent, VENUE_EVENT, EVENT_EVENT, EVENT_UPDATED_EVENT } from "./types";
+import { type newVenue, type newEvent, VENUE_EVENT, EVENT_EVENT, EVENT_UPDATED_EVENT, VENUE_UPDATED_EVENT } from "./types";
 
 const { VITE_MATRIX_TOKEN, VITE_HOMESERVER, VITE_ROOM_ID, VITE_REGISTRATION_TOKEN } = import.meta.env;
 
@@ -64,6 +64,24 @@ export const putEvent = async (event: newEvent, old_event_id: string, token: str
             body: JSON.stringify({
                 ...event,
                 old_event_id,
+            }),
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
+    const putResult = await putResponse.json();
+    return putResult;
+};
+
+export const putVenue = async (venue: newVenue, old_venue_id: string, token: string) => {
+    const putResponse = await fetch(
+        `${VITE_HOMESERVER}/_matrix/client/v3/rooms/${VITE_ROOM_ID}/send/${VENUE_UPDATED_EVENT}/${Math.random()}`,
+        {
+            method: "PUT",
+            body: JSON.stringify({
+                ...venue,
+                old_venue_id,
             }),
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -150,6 +168,27 @@ export const joinRoom = async (username: string, access_token: string) => {
         method: "POST",
         headers: {
             Authorization: `Bearer ${access_token}`,
+        },
+    });
+};
+
+export const postImage = async (fileName: string, image: ArrayBuffer, access_token: string) => {
+    const fileExtension = fileName.split(".")[1];
+
+    return fetch(`${VITE_HOMESERVER}/_matrix/media/v3/upload?filename=${fileName}`, {
+        method: "POST",
+        body: image,
+        headers: {
+            "Content-Type": `image/${fileExtension}`,
+            Authorization: `Bearer ${access_token}`,
+        },
+    });
+};
+
+export const getImage = async (mxc: string) => {
+    return fetch(`${VITE_HOMESERVER}/_matrix/client/v1/media/download/${mxc}`, {
+        headers: {
+            Authorization: `Bearer ${VITE_MATRIX_TOKEN}`,
         },
     });
 };
