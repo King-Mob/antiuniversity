@@ -21,7 +21,7 @@ While the co-organisers at Antiuni HQ help administrate the platform, it’s the
 
 Past events have contained elements of the following – participation, open-ended (but structured) discussion, collaboration, a practical workshop, a walk, an educational (or otherwise) experiment, a public space intervention, direct action…
 
-There is no application process - all events are included as long as they follow the Antiuni principles outlined [here](/about) (in short - cause no harm)
+There is no application process - all events are included as long as they follow the Antiuni principles outlined [here](./about) (in short - cause no harm)
 
 You may have a fully formed idea, with a platform and a specific audience in mind, or you might want to discuss your ideas with us. We will be holding facilitation sessions to help with brainstorming or any questions. Check our instagram for updates on facilitation sessions!
 
@@ -107,7 +107,7 @@ Eventbrite [Tips](https://www.eventbrite.co.uk/blog/coronavirus-event-tips-resou
 Send us any photos, observations, or useful quotes from guests and hosts. 
 We encourage you to use your event as a jumping off platform to build new communities or regular events. Keep in touch in future so we can help build up the wider Antiuni ecosystem and boost other relevant projects. 
 
-If you need support from Antiuni HQ, feel free to reach us via email or instagram. Links are on the [contact page](/contact).
+If you need support from Antiuni HQ, feel free to reach us via email or instagram. Links are on the [contact page](./contact).
 
 `;
 
