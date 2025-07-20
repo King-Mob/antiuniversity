@@ -44,7 +44,7 @@ If your event takes place online only, please choose the online Antiuni place as
 
 ❗**Deleting your place will cause all events that have chosen your place to disappear**❗(please give us or the organisers of the event good warning if you wish to do so)
 
-Use this [guide](festival.antiuniversity.org/instructions) if you need more information on registering an event or creating a venue.
+Use this [guide](/instructions) if you need more information on registering an event or creating a venue.
 `;
 
 function Venues({ venues, user }: { venues: venue[]; user: user | undefined }) {
