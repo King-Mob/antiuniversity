@@ -55,6 +55,12 @@
     margin-bottom: 10px;
 }
 
+@media screen and (max-width: 550px) {
+    .days-container {
+        flex-direction: column;
+    }
+}
+
 .slot-container {
     display: flex;
     flex-direction: column;
@@ -79,7 +85,9 @@
 }
 
 .day-heading {
-    width: 60px;
+    width: fit-content;
+    padding: 0px 5px;
+    margin: 2px 0px;
 }
 
 .creation-container {

@@ -42,13 +42,13 @@ function Venue({
         );
 
     const days: ReactElement[][] = [
-        [<p className="day-heading">Monday 13th</p>],
-        [<p className="day-heading">Tuesday 14th</p>],
-        [<p className="day-heading">Wednesday 15th</p>],
-        [<p className="day-heading">Thursday 16th</p>],
-        [<p className="day-heading">Friday 17th</p>],
-        [<p className="day-heading">Saturday 18th</p>],
-        [<p className="day-heading">Sunday 19th</p>],
+        [<p className="day-heading">Monday</p>, <p className="day-heading">13th</p>],
+        [<p className="day-heading">Tuesday</p>, <p className="day-heading">14th</p>],
+        [<p className="day-heading">Wednesday</p>, <p className="day-heading">15th</p>],
+        [<p className="day-heading">Thursday</p>, <p className="day-heading">16th</p>],
+        [<p className="day-heading">Friday</p>, <p className="day-heading">17th</p>],
+        [<p className="day-heading">Saturday</p>, <p className="day-heading">18th</p>],
+        [<p className="day-heading">Sunday</p>, <p className="day-heading">19th</p>],
     ];
 
     if (slotsAvailable)
