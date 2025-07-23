@@ -68,7 +68,7 @@ function Event({
         <div className="event-container">
             <img src={imageSrc || "/reader.svg"} className="event-image" />
             <h1>{event.name}</h1>
-            <p>Venue: {venue && venue.name}</p>
+            <p>Venue: {venue && <Link to={`/venue/${venue.id}`}>{venue.name}</Link>}</p>
             <p>Date/Time: {time}</p>
             <p>Organiser: {event.organiserName}</p>
             <p>{event.description}</p>
