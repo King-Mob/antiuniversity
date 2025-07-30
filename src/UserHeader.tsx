@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { type user } from "./types";
 import { postLogin, getUsernameAvailable, postRegister, joinRoom } from "./requests";
 

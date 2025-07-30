@@ -96,7 +96,7 @@ function prepareEvents(timeline: matrixEvent[], user: user | undefined, isAdmin:
     });
 
     return events.filter(
-        (event) => (event.published && (event.approved || isAdmin)) || (user && event.creator === user.name)
+        (event) => isAdmin || (user && event.creator === user.name) || (event.published && event.approved)
     );
 }
 
