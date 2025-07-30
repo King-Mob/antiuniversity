@@ -101,7 +101,7 @@ function CreateEvent({
                 const slot = new Date(slotTime);
                 const slotOn = slotsUsed.includes(slotTime);
 
-                if (dayIndex === slot.getDay() - (1 % 7))
+                if (dayIndex === (slot.getDay() + 6) % 7)
                     day.push(
                         <div className="slot-container">
                             <button
