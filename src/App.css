@@ -188,6 +188,7 @@ textarea {
     margin-top: 20px;
     background-color: var(--white-translucent);
     padding: 20px;
+    max-width: 760px;
 }
 
 .venue-image {
@@ -201,6 +202,7 @@ textarea {
     margin-top: 20px;
     background-color: var(--white-translucent);
     padding: 20px;
+    max-width: 760px;
 }
 
 .slot-text {
