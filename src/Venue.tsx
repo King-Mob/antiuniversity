@@ -53,7 +53,7 @@ function Venue({
 
     if (slotsAvailable)
         days.forEach((day, dayIndex) => {
-            slotsAvailable.forEach((slotTime) => {
+            slotsAvailable.sort().forEach((slotTime) => {
                 const slot = new Date(slotTime);
 
                 if (dayIndex === slot.getDay() - (1 % 7))

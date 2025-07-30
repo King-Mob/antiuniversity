@@ -97,7 +97,7 @@ function CreateEvent({
 
     if (slotsAvailable)
         days.forEach((day, dayIndex) => {
-            slotsAvailable.forEach((slotTime) => {
+            slotsAvailable.sort().forEach((slotTime) => {
                 const slot = new Date(slotTime);
                 const slotOn = slotsUsed.includes(slotTime);
 
