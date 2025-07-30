@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router";
 import { useState, useEffect, type ReactElement } from "react";
 import { type venue, type event, type user } from "./types";
 import { getImage } from "./requests";
+import Markdown from "react-markdown";
 
 function Venue({
     venues,
@@ -72,7 +73,7 @@ function Venue({
             <p>Address: {venue.address}</p>
             <p>Capacity: {venue.capacity}</p>
             <p>Accessibility: {venue.accessibilityInformation}</p>
-            <p>{venue.otherInformation}</p>
+            <Markdown>{venue.otherInformation}</Markdown>
             <p>Times available:</p>
             <div className="days-container">
                 {days.map((day) => (

@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router";
 import { type event, type venue, type user } from "./types";
 import { useState, useEffect } from "react";
 import { getImage } from "./requests";
+import Markdown from "react-markdown";
 
 export function formatTime(event: event) {
     if (!event.slotsUsed[0]) return "no time scheduled";
@@ -71,7 +72,7 @@ function Event({
             <p>Venue: {venue && <Link to={`/venue/${venue.id}`}>{venue.name}</Link>}</p>
             <p>Date/Time: {time}</p>
             <p>Organiser: {event.organiserName}</p>
-            <p>{event.description}</p>
+            <Markdown>{event.description}</Markdown>
             <p>
                 Created by <Link to={`/user/${event.creator}`}>{event.creator}</Link>
             </p>
