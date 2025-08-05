@@ -39,7 +39,9 @@ First you need to register as an organiser on the website. Click on the log in b
 
 Antiuni festival takes place in-person and online. There are a number of venues that are available to host Antiuni events. You can choose from the different spaces when registering your event and book a time slot.
 
-If you have organised your own venue (including a public space e.g. a park), you need to add it on the Venues tab first before creating an event. Fill in all the place details, including selecting all the time slots that the venue is available. Select the time slots for your event. You can also make more slots available for other people to book. 
+Go to the venues tab and check the details and times available for different venues. You don’t need to do anything on the venues tab (unless you want to create a new venue) – just decide which one you want to use so you can select it when you create your event (next step).
+
+If you have organised your own venue (including a public space e.g. a park), you need to add it on the Venues tab first before creating an event. Fill in all the place details, including selecting all the time slots that the venue is available. Select the time slots for your event. You can also make more slots available for other people to book.
 
 Most of the available venues are in London, but feel free to add venues/events anywhere! 
 When choosing (or creating) a venue, consider accessibility and capacity. If you have any requests or want help choosing a place, get in touch with us or come to our facilitation meeting. 
