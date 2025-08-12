@@ -9,7 +9,11 @@ The Antiuniversity is an ongoing programme of self organised radical learning an
 
 Submissions open: Sunday 20th July – 31st August 2025
 
-Facilitation workshop: to be confirmed (check instagram)
+Facilitation workshops:
+
+12th August 6:30pm @ Cooperation Town (NW5 4RA)
+
+14th August 5:30pm @ Feminist Library (SE15 6JL)
 
 Festival dates: 13th – 19th October 2025
 
