@@ -39,6 +39,7 @@ function prepareVenues(timeline: matrixEvent[]) {
         if (matrixEvent.type === VENUE_EVENT && matrixEvent.content.name) {
             venues.push({
                 ...matrixEvent.content,
+                slotsAvailable: matrixEvent.content.slotsAvailable.sort(),
                 id: matrixEvent.event_id,
                 creator: justLocalPart(matrixEvent.sender),
             } as venue);
@@ -53,6 +54,7 @@ function prepareVenues(timeline: matrixEvent[]) {
                     .concat([
                         {
                             ...matrixEvent.content,
+                            slotsAvailable: matrixEvent.content.slotsAvailable.sort(),
                             id: matrixEvent.content.old_venue_id,
                             creator: oldVenue.creator,
                         },
@@ -72,6 +74,7 @@ function prepareEvents(timeline: matrixEvent[], user: user | undefined, isAdmin:
         if (matrixEvent.type === EVENT_EVENT && matrixEvent.content.name) {
             events.push({
                 ...matrixEvent.content,
+                slotsUsed: matrixEvent.content.slotsUsed.sort(),
                 id: matrixEvent.event_id,
                 creator: justLocalPart(matrixEvent.sender),
             });
@@ -86,6 +89,7 @@ function prepareEvents(timeline: matrixEvent[], user: user | undefined, isAdmin:
                     .concat([
                         {
                             ...matrixEvent.content,
+                            slotsUsed: matrixEvent.content.slotsUsed.sort(),
                             id: matrixEvent.content.old_event_id,
                             creator: oldEvent.creator,
                         },
