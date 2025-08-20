@@ -105,10 +105,9 @@ function Home({ venues, events, user }: { venues: venue[]; events: event[]; user
         </>
     ) : (
         <div id="coming-soon-container">
-            <h1>Antiuniversity is coming soon!</h1>
-            <p>13th - 19th October</p>
-            <p>Event submissions open on the 20th July</p>
-            <p>Watch this space, put the 13th-19th October in your calendar and start planning your event now!</p>
+            <h1>Antiuniversity is down for maintenance.</h1>
+            <p>The festival is on the 13th - 19th October</p>
+            <p>Sorry for the inconvenience, we're working hard to bring the site back</p>
         </div>
     );
 }
