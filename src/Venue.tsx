@@ -1,6 +1,6 @@
 import { useParams, Link } from "react-router";
 import { useState, useEffect, type ReactElement } from "react";
-import { type venue, type event, type user } from "./types";
+import { type venue, type event, type user, ALL_DAY_SLOTS } from "./types";
 import { getImage } from "./requests";
 import Markdown from "react-markdown";
 
@@ -60,7 +60,7 @@ function Venue({
                 if (dayIndex === (slot.getDay() + 6) % 7)
                     day.push(
                         <div className="slot-container">
-                            <p className="slot-text">{slot.toTimeString().slice(0, 5)}</p>
+                            <p className="slot-text">{Object.values(ALL_DAY_SLOTS).includes(slot.getTime()) ? "ALL DAY" : slot.toTimeString().slice(0, 5)}</p>
                         </div>
                     );
             });

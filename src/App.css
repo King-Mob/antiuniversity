@@ -201,7 +201,7 @@ textarea {
 .event-container {
     margin-top: 20px;
     background-color: var(--white-translucent);
-    max-width: 760px;
+    max-width: 800px;
     width: 100%;
 }
 

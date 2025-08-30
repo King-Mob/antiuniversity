@@ -1,11 +1,42 @@
 import { useParams, Link } from "react-router";
-import { type event, type venue, type user } from "./types";
+import { type event, type venue, type user, ALL_DAY_SLOTS } from "./types";
 import { useState, useEffect } from "react";
 import { getImage } from "./requests";
 import Markdown from "react-markdown";
 
-export function formatTime(event: event) {
-    if (!event.slotsUsed[0]) return "no time scheduled";
+export function breakIntoDays(slots: number[]) {
+    const timesByDay: number[][] = [];
+    slots.forEach(slot => {
+        const difference = slot - slots[0];
+        const days = [0, 1, 2, 3, 4, 5, 6];
+        days.forEach(day => {
+            if (difference >= day * 24 * 60 * 60 * 1000 && difference < (day + 1) * 24 * 60 * 60 * 1000) {
+                if (timesByDay[day]) {
+                    timesByDay[day].push(slot);
+                }
+                else {
+                    timesByDay[day] = [slot]
+                }
+            }
+        })
+    })
+    return timesByDay;
+}
+
+export function formatTime(slots: number[]) {
+    if (!slots[0]) return "no time scheduled";
+
+    if (Object.values(ALL_DAY_SLOTS).includes(slots[0])) {
+        const allDayOptions: Intl.DateTimeFormatOptions = {
+            weekday: "long",
+            month: "long",
+            day: "numeric",
+        }
+
+        const allDayTime = new Date(slots[0]);
+
+        return `${allDayTime.toLocaleDateString("en-GB", allDayOptions)} - All day`;
+    }
 
     const startTimeOptions: Intl.DateTimeFormatOptions = {
         weekday: "long",
@@ -20,9 +51,9 @@ export function formatTime(event: event) {
         minute: "numeric",
     };
 
-    const startTime = new Date(event.slotsUsed[0]);
+    const startTime = new Date(slots[0]);
 
-    const lastSlot = event.slotsUsed[event.slotsUsed.length - 1];
+    const lastSlot = slots[slots.length - 1];
 
     const endTime = new Date(lastSlot);
     endTime.setTime(lastSlot + 30 * 60 * 1000);
@@ -63,7 +94,7 @@ function Event({
         loadImage();
     }, [event]);
 
-    const time = event && formatTime(event);
+    const time = event && breakIntoDays(event.slotsUsed).map(day => formatTime(day)).join(", ");
 
     return event ? (
         <div className="event-container">

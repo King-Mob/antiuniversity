@@ -3,7 +3,7 @@ import { Link } from "react-router";
 import "./App.css";
 import { type venue, type event, type user, type day } from "./types";
 import { getImage } from "./requests";
-import { formatTime } from "./Event";
+import { breakIntoDays, formatTime } from "./Event";
 
 function Event({ event, venues }: { event: event; venues: venue[] }) {
     const [imageSrc, setImageSrc] = useState("");
@@ -22,7 +22,7 @@ function Event({ event, venues }: { event: event; venues: venue[] }) {
     }, []);
 
     const venue = venues.find((venue) => venue.id === event.venueId);
-    const time = formatTime(event);
+    const time = breakIntoDays(event.slotsUsed).map(day => formatTime(day)).join(", ");
 
     return (
         <div className="event">
@@ -58,12 +58,17 @@ function Home({ venues, events, user }: { venues: venue[]; events: event[]; user
     ];
 
     events.forEach((event) => {
-        const eventStartSlot = event.slotsUsed && event.slotsUsed[0];
+        const slots = event.slotsUsed;
 
-        if (eventStartSlot) {
-            const eventStartTime = new Date(eventStartSlot);
-            const eventDay = days.find((day) => day.date.getDate() === eventStartTime.getDate());
-            eventDay?.events.push(event);
+        if (slots) {
+            const eventDays = days.filter((day) => {
+                const slotsOnThisDay = slots.filter(slot => {
+                    const slotDate = new Date(slot);
+                    return day.date.getDate() === slotDate.getDate();
+                });
+                return slotsOnThisDay.length > 0;
+            });
+            eventDays.forEach(eventDay => eventDay.events.push(event));
         }
     });
 

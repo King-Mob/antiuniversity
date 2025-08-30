@@ -1,7 +1,7 @@
 import { useState, useEffect, type ReactElement } from "react";
 import { useNavigate, useParams } from "react-router";
 import { putEvent, postImage, getImage, redactEvent } from "./requests";
-import { type venue, type event, type user } from "./types";
+import { type venue, type event, type user, ALL_DAY_SLOTS } from "./types";
 
 function EditEvent({
     venues,
@@ -162,7 +162,7 @@ function EditEvent({
                                 className={`slot-toggle ${slotOn ? "slot-selected" : "slot-unselected"}`}
                                 onClick={() => toggleSlot(slot)}
                             >
-                                {slot.toTimeString().slice(0, 5)}
+                                {Object.values(ALL_DAY_SLOTS).includes(slot.getTime()) ? "ALL DAY" : slot.toTimeString().slice(0, 5)}
                             </button>
                         </div>
                     );

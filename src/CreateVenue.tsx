@@ -1,7 +1,18 @@
 import { useState, type ReactElement } from "react";
 import { useNavigate } from "react-router";
 import { postVenue, postImage } from "./requests";
-import { type user } from "./types";
+import { type user, MIDNIGHT13THUTC, ALL_DAY_SLOTS } from "./types";
+
+export function SlotButton({ slotOn, slot, toggleSlot }: { slotOn: boolean, slot: Date, toggleSlot: (slot: Date) => void }) {
+    return <div className="slot-container">
+        <button
+            className={`slot-toggle ${slotOn ? "slot-selected" : "slot-unselected"}`}
+            onClick={() => toggleSlot(slot)}
+        >
+            {Object.values(ALL_DAY_SLOTS).includes(slot.getTime()) ? "ALL DAY" : slot.toTimeString().slice(0, 5)}
+        </button>
+    </div>
+}
 
 function CreateVenue({ loadEvents, user }: { loadEvents: () => void; user: user | undefined }) {
     const [name, setName] = useState("");
@@ -64,32 +75,23 @@ function CreateVenue({ loadEvents, user }: { loadEvents: () => void; user: user 
         }
     }
 
-    const midnight13thUTC = 1760310000000;
-
     const days: ReactElement[][] = [
-        [<p className="day-heading">Monday 13th</p>],
-        [<p className="day-heading">Tuesday 14th</p>],
-        [<p className="day-heading">Wednesday 15th</p>],
-        [<p className="day-heading">Thursday 16th</p>],
-        [<p className="day-heading">Friday 17th</p>],
-        [<p className="day-heading">Saturday 18th</p>],
-        [<p className="day-heading">Sunday 19th</p>],
+        [<p className="day-heading">Monday 13th</p>, <SlotButton slotOn={slotsAvailable.includes(ALL_DAY_SLOTS.MONDAY)} slot={new Date(ALL_DAY_SLOTS.MONDAY)} toggleSlot={toggleSlot} />],
+        [<p className="day-heading">Tuesday 14th</p>, <SlotButton slotOn={slotsAvailable.includes(ALL_DAY_SLOTS.TUESDAY)} slot={new Date(ALL_DAY_SLOTS.TUESDAY)} toggleSlot={toggleSlot} />],
+        [<p className="day-heading">Wednesday 15th</p>, <SlotButton slotOn={slotsAvailable.includes(ALL_DAY_SLOTS.WEDNESDAY)} slot={new Date(ALL_DAY_SLOTS.WEDNESDAY)} toggleSlot={toggleSlot} />],
+        [<p className="day-heading">Thursday 16th</p>, <SlotButton slotOn={slotsAvailable.includes(ALL_DAY_SLOTS.THURSDAY)} slot={new Date(ALL_DAY_SLOTS.THURSDAY)} toggleSlot={toggleSlot} />],
+        [<p className="day-heading">Friday 17th</p>, <SlotButton slotOn={slotsAvailable.includes(ALL_DAY_SLOTS.FRIDAY)} slot={new Date(ALL_DAY_SLOTS.FRIDAY)} toggleSlot={toggleSlot} />],
+        [<p className="day-heading">Saturday 18th</p>, <SlotButton slotOn={slotsAvailable.includes(ALL_DAY_SLOTS.SATURDAY)} slot={new Date(ALL_DAY_SLOTS.SATURDAY)} toggleSlot={toggleSlot} />],
+        [<p className="day-heading">Sunday 19th</p>, <SlotButton slotOn={slotsAvailable.includes(ALL_DAY_SLOTS.SUNDAY)} slot={new Date(ALL_DAY_SLOTS.SUNDAY)} toggleSlot={toggleSlot} />],
     ];
 
     days.forEach((day, dayIndex) => {
         for (let halfHourIndex = 0; halfHourIndex < 48; halfHourIndex++) {
-            const slot = new Date(midnight13thUTC + halfHourIndex * 1000 * 60 * 30 + dayIndex * 1000 * 60 * 60 * 24);
+            const slot = new Date(MIDNIGHT13THUTC + halfHourIndex * 1000 * 60 * 30 + dayIndex * 1000 * 60 * 60 * 24);
             const slotOn = slotsAvailable.includes(slot.getTime());
 
             day.push(
-                <div className="slot-container">
-                    <button
-                        className={`slot-toggle ${slotOn ? "slot-selected" : "slot-unselected"}`}
-                        onClick={() => toggleSlot(slot)}
-                    >
-                        {slot.toTimeString().slice(0, 5)}
-                    </button>
-                </div>
+                <SlotButton slotOn={slotOn} slot={slot} toggleSlot={toggleSlot} />
             );
         }
     });

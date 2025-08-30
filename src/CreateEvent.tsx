@@ -1,7 +1,7 @@
 import { useState, type ReactElement } from "react";
 import { Link, useNavigate } from "react-router";
 import { postEvent, postImage } from "./requests";
-import { type venue, type event, type user } from "./types";
+import { type venue, type event, type user, ALL_DAY_SLOTS } from "./types";
 
 function CreateEvent({
     venues,
@@ -108,7 +108,7 @@ function CreateEvent({
                                 className={`slot-toggle ${slotOn ? "slot-selected" : "slot-unselected"}`}
                                 onClick={() => toggleSlot(slot)}
                             >
-                                {slot.toTimeString().slice(0, 5)}
+                                {Object.values(ALL_DAY_SLOTS).includes(slot.getTime()) ? "ALL DAY" : slot.toTimeString().slice(0, 5)}
                             </button>
                         </div>
                     );
