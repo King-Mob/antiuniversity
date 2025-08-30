@@ -201,14 +201,14 @@ textarea {
 .event-container {
     margin-top: 20px;
     background-color: var(--white-translucent);
-    padding: 20px;
     max-width: 760px;
     width: 100%;
 }
 
-.event-container p {
-    width: 100%;
+.event-container p,
+.event-container h1 {
     word-break: break-word;
+    padding: 0px 20px;
 }
 
 .slot-text {
