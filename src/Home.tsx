@@ -96,6 +96,13 @@ function Home({
     }
   });
 
+  days.forEach((day) => {
+    day.events.sort(
+      (eventA, eventB) =>
+        eventA.slotsUsed.sort()[0] - eventB.slotsUsed.sort()[0]
+    );
+  });
+
   return (
     <>
       {VITE_SUBMISSIONS_OPEN === "true" && (
