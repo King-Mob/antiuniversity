@@ -33,9 +33,11 @@ const { VITE_SUBMISSIONS_OPEN } = import.meta.env;
 function CreateVenue({
   loadEvents,
   user,
+  isAdmin,
 }: {
   loadEvents: () => void;
   user: user | undefined;
+  isAdmin: boolean;
 }) {
   const [name, setName] = useState("");
   const [otherInformation, setOtherInformation] = useState("");
@@ -46,7 +48,7 @@ function CreateVenue({
   const [slotsAvailable, setSlotsAvailable] = useState<number[]>([]);
   const navigate = useNavigate();
 
-  if (VITE_SUBMISSIONS_OPEN !== "true") {
+  if (VITE_SUBMISSIONS_OPEN !== "true" && !isAdmin) {
     navigate("/venues");
   }
 

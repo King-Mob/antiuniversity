@@ -10,11 +10,13 @@ function CreateEvent({
   existingEvents,
   loadEvents,
   user,
+  isAdmin,
 }: {
   venues: venue[];
   existingEvents: event[];
   loadEvents: () => void;
   user: user | undefined;
+  isAdmin: boolean;
 }) {
   const [organiserName, setOrganiserName] = useState("");
   const [organiserEmail, setOrganiserEmail] = useState("");
@@ -30,7 +32,7 @@ function CreateEvent({
   const [published, setPublished] = useState(false);
   const navigate = useNavigate();
 
-  if (VITE_SUBMISSIONS_OPEN !== "true") {
+  if (VITE_SUBMISSIONS_OPEN !== "true" && !isAdmin) {
     navigate("/");
   }
 

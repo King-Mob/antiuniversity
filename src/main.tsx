@@ -18,175 +18,230 @@ import Instructions from "./Instructions.tsx";
 import Venues from "./Venues.tsx";
 import { getEvents } from "./requests.ts";
 import {
-    VENUE_EVENT,
-    EVENT_EVENT,
-    EVENT_UPDATED_EVENT,
-    type matrixEvent,
-    type venue,
-    type event,
-    type user,
-    VENUE_UPDATED_EVENT,
+  VENUE_EVENT,
+  EVENT_EVENT,
+  EVENT_UPDATED_EVENT,
+  type matrixEvent,
+  type venue,
+  type event,
+  type user,
+  VENUE_UPDATED_EVENT,
 } from "./types.ts";
 
 function justLocalPart(username: string) {
-    return username.split("@")[1].split(":")[0];
+  return username.split("@")[1].split(":")[0];
 }
 
 function prepareVenues(timeline: matrixEvent[]) {
-    let venues: venue[] = [];
+  let venues: venue[] = [];
 
-    timeline.forEach((matrixEvent) => {
-        if (matrixEvent.type === VENUE_EVENT && matrixEvent.content.name) {
-            venues.push({
-                ...matrixEvent.content,
-                slotsAvailable: matrixEvent.content.slotsAvailable.sort(),
-                id: matrixEvent.event_id,
-                creator: justLocalPart(matrixEvent.sender),
-            } as venue);
-        }
-        if (matrixEvent.type === VENUE_UPDATED_EVENT) {
-            const venueToUpdatePosition = venues.findIndex((event) => event.id === matrixEvent.content.old_venue_id);
-            const oldVenue = venues[venueToUpdatePosition];
+  timeline.forEach((matrixEvent) => {
+    if (matrixEvent.type === VENUE_EVENT && matrixEvent.content.name) {
+      venues.push({
+        ...matrixEvent.content,
+        slotsAvailable: matrixEvent.content.slotsAvailable.sort(),
+        id: matrixEvent.event_id,
+        creator: justLocalPart(matrixEvent.sender),
+      } as venue);
+    }
+    if (matrixEvent.type === VENUE_UPDATED_EVENT) {
+      const venueToUpdatePosition = venues.findIndex(
+        (event) => event.id === matrixEvent.content.old_venue_id
+      );
+      const oldVenue = venues[venueToUpdatePosition];
 
-            if (oldVenue) {
-                venues = venues
-                    .slice(0, venueToUpdatePosition)
-                    .concat([
-                        {
-                            ...matrixEvent.content,
-                            slotsAvailable: matrixEvent.content.slotsAvailable.sort(),
-                            id: matrixEvent.content.old_venue_id,
-                            creator: oldVenue.creator,
-                        },
-                    ])
-                    .concat(venues.slice(venueToUpdatePosition + 1));
-            }
-        }
-    });
+      if (oldVenue) {
+        venues = venues
+          .slice(0, venueToUpdatePosition)
+          .concat([
+            {
+              ...matrixEvent.content,
+              slotsAvailable: matrixEvent.content.slotsAvailable.sort(),
+              id: matrixEvent.content.old_venue_id,
+              creator: oldVenue.creator,
+            },
+          ])
+          .concat(venues.slice(venueToUpdatePosition + 1));
+      }
+    }
+  });
 
-    return venues;
+  return venues;
 }
 
-function prepareEvents(timeline: matrixEvent[], user: user | undefined, isAdmin: boolean) {
-    let events: event[] = [];
+function prepareEvents(
+  timeline: matrixEvent[],
+  user: user | undefined,
+  isAdmin: boolean
+) {
+  let events: event[] = [];
 
-    timeline.forEach((matrixEvent) => {
-        if (matrixEvent.type === EVENT_EVENT && matrixEvent.content.name) {
-            events.push({
-                ...matrixEvent.content,
-                slotsUsed: matrixEvent.content.slotsUsed.sort(),
-                id: matrixEvent.event_id,
-                creator: justLocalPart(matrixEvent.sender),
-            });
-        }
-        if (matrixEvent.type === EVENT_UPDATED_EVENT) {
-            const eventToUpdatePosition = events.findIndex((event) => event.id === matrixEvent.content.old_event_id);
-            const oldEvent = events[eventToUpdatePosition];
+  timeline.forEach((matrixEvent) => {
+    if (matrixEvent.type === EVENT_EVENT && matrixEvent.content.name) {
+      events.push({
+        ...matrixEvent.content,
+        slotsUsed: matrixEvent.content.slotsUsed.sort(),
+        id: matrixEvent.event_id,
+        creator: justLocalPart(matrixEvent.sender),
+      });
+    }
+    if (matrixEvent.type === EVENT_UPDATED_EVENT) {
+      const eventToUpdatePosition = events.findIndex(
+        (event) => event.id === matrixEvent.content.old_event_id
+      );
+      const oldEvent = events[eventToUpdatePosition];
 
-            if (oldEvent) {
-                events = events
-                    .slice(0, eventToUpdatePosition)
-                    .concat([
-                        {
-                            ...matrixEvent.content,
-                            slotsUsed: matrixEvent.content.slotsUsed.sort(),
-                            id: matrixEvent.content.old_event_id,
-                            creator: oldEvent.creator,
-                        },
-                    ])
-                    .concat(events.slice(eventToUpdatePosition + 1));
-            }
-        }
-    });
+      if (oldEvent) {
+        events = events
+          .slice(0, eventToUpdatePosition)
+          .concat([
+            {
+              ...matrixEvent.content,
+              slotsUsed: matrixEvent.content.slotsUsed.sort(),
+              id: matrixEvent.content.old_event_id,
+              creator: oldEvent.creator,
+            },
+          ])
+          .concat(events.slice(eventToUpdatePosition + 1));
+      }
+    }
+  });
 
-    return events.filter(
-        (event) => isAdmin || (user && event.creator === user.name) || (event.published && event.approved)
-    );
+  return events.filter(
+    (event) =>
+      isAdmin ||
+      (user && event.creator === user.name) ||
+      (event.published && event.approved)
+  );
 }
 
 function App() {
-    const [timeline, setTimeline] = useState<matrixEvent[]>([]);
-    const [user, setUser] = useState<user | undefined>();
-    const isAdmin = false || user?.name === "antiuniversity.admin";
+  const [timeline, setTimeline] = useState<matrixEvent[]>([]);
+  const [user, setUser] = useState<user | undefined>();
+  const isAdmin = false || user?.name === "antiuniversity.admin";
 
-    function loadUser() {
-        const loginDetails = localStorage.getItem("antiuniversity.login.details");
-        if (loginDetails) {
-            setUser(JSON.parse(loginDetails));
-        }
+  function loadUser() {
+    const loginDetails = localStorage.getItem("antiuniversity.login.details");
+    if (loginDetails) {
+      setUser(JSON.parse(loginDetails));
     }
+  }
 
-    async function loadEvents() {
-        const events = await getEvents();
-        setTimeline(events.chunk);
-    }
+  async function loadEvents() {
+    const events = await getEvents();
+    setTimeline(events.chunk);
+  }
 
-    useEffect(() => {
-        loadUser();
-        loadEvents();
-    }, []);
+  useEffect(() => {
+    loadUser();
+    loadEvents();
+  }, []);
 
-    const venues = prepareVenues(timeline);
-    const events = prepareEvents(timeline, user, isAdmin);
-    const draftEvents = prepareEvents(timeline, user, true);
+  const venues = prepareVenues(timeline);
+  const events = prepareEvents(timeline, user, isAdmin);
+  const draftEvents = prepareEvents(timeline, user, true);
 
-    return (
-        <BrowserRouter>
-            <UserHeader user={user} setUser={setUser} />
-            <Routes>
-                <Route path="/" element={<Home venues={venues} events={events} user={user} />} />
-                <Route path="/venue">
-                    <Route path="new" element={<CreateVenue loadEvents={loadEvents} user={user} />} />
-                    <Route
-                        path=":id"
-                        element={<Venue venues={venues} existingEvents={draftEvents} user={user} isAdmin={isAdmin} />}
-                    />
-                    <Route
-                        path=":id/edit"
-                        element={<EditVenue venues={venues} loadEvents={loadEvents} user={user} isAdmin={isAdmin} />}
-                    />
-                </Route>
-                <Route path="/event">
-                    <Route
-                        path=":id"
-                        element={<Event events={events} venues={venues} user={user} isAdmin={isAdmin} />}
-                    />
-                    <Route
-                        path=":id/edit"
-                        element={
-                            <EditEvent
-                                venues={venues}
-                                existingEvents={draftEvents}
-                                user={user}
-                                isAdmin={isAdmin}
-                                loadEvents={loadEvents}
-                            />
-                        }
-                    />
-                    <Route
-                        path="new"
-                        element={
-                            <CreateEvent
-                                venues={venues}
-                                existingEvents={draftEvents}
-                                loadEvents={loadEvents}
-                                user={user}
-                            />
-                        }
-                    />
-                </Route>
-                <Route path="/user/:id" element={<User events={events} />} />
-                <Route path="about" element={<About />} />
-                <Route path="contact" element={<Contact />} />
-                <Route path="venues" element={<Venues venues={venues} user={user} />} />
-                <Route path="instructions" element={<Instructions />} />
-            </Routes>
-        </BrowserRouter>
-    );
+  return (
+    <BrowserRouter>
+      <UserHeader user={user} setUser={setUser} />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Home
+              venues={venues}
+              events={events}
+              user={user}
+              isAdmin={isAdmin}
+            />
+          }
+        />
+        <Route path="/venue">
+          <Route
+            path="new"
+            element={
+              <CreateVenue
+                loadEvents={loadEvents}
+                user={user}
+                isAdmin={isAdmin}
+              />
+            }
+          />
+          <Route
+            path=":id"
+            element={
+              <Venue
+                venues={venues}
+                existingEvents={draftEvents}
+                user={user}
+                isAdmin={isAdmin}
+              />
+            }
+          />
+          <Route
+            path=":id/edit"
+            element={
+              <EditVenue
+                venues={venues}
+                loadEvents={loadEvents}
+                user={user}
+                isAdmin={isAdmin}
+              />
+            }
+          />
+        </Route>
+        <Route path="/event">
+          <Route
+            path=":id"
+            element={
+              <Event
+                events={events}
+                venues={venues}
+                user={user}
+                isAdmin={isAdmin}
+              />
+            }
+          />
+          <Route
+            path=":id/edit"
+            element={
+              <EditEvent
+                venues={venues}
+                existingEvents={draftEvents}
+                user={user}
+                isAdmin={isAdmin}
+                loadEvents={loadEvents}
+              />
+            }
+          />
+          <Route
+            path="new"
+            element={
+              <CreateEvent
+                venues={venues}
+                existingEvents={draftEvents}
+                loadEvents={loadEvents}
+                user={user}
+                isAdmin={isAdmin}
+              />
+            }
+          />
+        </Route>
+        <Route path="/user/:id" element={<User events={events} />} />
+        <Route path="about" element={<About />} />
+        <Route path="contact" element={<Contact />} />
+        <Route
+          path="venues"
+          element={<Venues venues={venues} user={user} isAdmin={isAdmin} />}
+        />
+        <Route path="instructions" element={<Instructions />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 createRoot(document.getElementById("root")!).render(
-    <StrictMode>
-        <App />
-    </StrictMode>
+  <StrictMode>
+    <App />
+  </StrictMode>
 );

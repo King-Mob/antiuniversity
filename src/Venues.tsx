@@ -4,33 +4,37 @@ import { useEffect, useState } from "react";
 import { getImage } from "./requests";
 import { type venue, type user } from "./types";
 
+const { VITE_SUBMISSIONS_OPEN } = import.meta.env;
+
 function Venue({ venue }: { venue: venue }) {
-    const [imageSrc, setImageSrc] = useState("");
+  const [imageSrc, setImageSrc] = useState("");
 
-    async function loadImage() {
-        if (venue.picture) {
-            const pictureResponse = await getImage(venue.picture.replace("mxc://", ""));
-            const pictureResult = await pictureResponse.blob();
-            const imageUrl = window.URL.createObjectURL(pictureResult);
-            setImageSrc(imageUrl);
-        }
+  async function loadImage() {
+    if (venue.picture) {
+      const pictureResponse = await getImage(
+        venue.picture.replace("mxc://", "")
+      );
+      const pictureResult = await pictureResponse.blob();
+      const imageUrl = window.URL.createObjectURL(pictureResult);
+      setImageSrc(imageUrl);
     }
+  }
 
-    useEffect(() => {
-        loadImage();
-    }, []);
+  useEffect(() => {
+    loadImage();
+  }, []);
 
-    return (
-        <div className="venue">
-            <img src={imageSrc || "/reader.svg"} className="event-image" />
-            <div className="venue-right">
-                <Link to={`/venue/${venue.id}`}>
-                    <h3>{venue.name}</h3>
-                </Link>
-                <p>Address: {venue.address}</p>
-            </div>
-        </div>
-    );
+  return (
+    <div className="venue">
+      <img src={imageSrc || "/reader.svg"} className="event-image" />
+      <div className="venue-right">
+        <Link to={`/venue/${venue.id}`}>
+          <h3>{venue.name}</h3>
+        </Link>
+        <p>Address: {venue.address}</p>
+      </div>
+    </div>
+  );
 }
 
 const content = `
@@ -47,23 +51,31 @@ If your event takes place online only, please choose the online Antiuni place as
 Use this [guide](/instructions) if you need more information on registering an event or creating a venue.
 `;
 
-function Venues({ venues, user }: { venues: venue[]; user: user | undefined }) {
-    return (
-        <div className="venues-container">
-            <h1>Venues</h1>
-            <div className="markdown-content">
-                <Markdown>{content}</Markdown>
-            </div>
-            {venues.map((venue) => (
-                <Venue venue={venue} />
-            ))}
-            {user && (
-                <Link to="/venue/new">
-                    <h2 className="create-link">Create venue</h2>
-                </Link>
-            )}
-        </div>
-    );
+function Venues({
+  venues,
+  user,
+  isAdmin,
+}: {
+  venues: venue[];
+  user: user | undefined;
+  isAdmin: boolean;
+}) {
+  return (
+    <div className="venues-container">
+      <h1>Venues</h1>
+      <div className="markdown-content">
+        <Markdown>{content}</Markdown>
+      </div>
+      {venues.map((venue) => (
+        <Venue venue={venue} />
+      ))}
+      {(VITE_SUBMISSIONS_OPEN === "true" || isAdmin) && user && (
+        <Link to="/venue/new">
+          <h2 className="create-link">Create venue</h2>
+        </Link>
+      )}
+    </div>
+  );
 }
 
 export default Venues;

@@ -50,10 +50,12 @@ function Home({
   venues,
   events,
   user,
+  isAdmin,
 }: {
   venues: venue[];
   events: event[];
   user: user | undefined;
+  isAdmin: boolean;
 }) {
   const { VITE_SUBMISSIONS_OPEN } = import.meta.env;
 
@@ -142,7 +144,7 @@ function Home({
             </>
           )
         )}
-        {VITE_SUBMISSIONS_OPEN === "true" && user && (
+        {(VITE_SUBMISSIONS_OPEN === "true" || isAdmin) && user && (
           <Link to="/event/new">
             <h2 className="create-link">Create event</h2>
           </Link>
