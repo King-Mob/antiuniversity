@@ -1,8 +1,9 @@
 import { type newVenue, type newEvent, VENUE_EVENT, EVENT_EVENT, EVENT_UPDATED_EVENT, VENUE_UPDATED_EVENT } from "./types";
+import { timelineStart } from "./main";
 
 const { VITE_MATRIX_TOKEN, VITE_HOMESERVER, VITE_ROOM_ID, VITE_REGISTRATION_TOKEN } = import.meta.env;
 
-export const getEvents = async (from: string = "s0_0_0_0_0_0_0_0_0_0") => {
+export const getEvents = async (from: string = timelineStart) => {
     const eventsResponse = await fetch(
         `${VITE_HOMESERVER}/_matrix/client/v3/rooms/${VITE_ROOM_ID}/messages?limit=10000&dir=f&from=${from}`,
         {

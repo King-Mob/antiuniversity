@@ -28,6 +28,8 @@ import {
   VENUE_UPDATED_EVENT,
 } from "./types.ts";
 
+export const timelineStart = "s0_0_0_0_0_0_0_0_0_0";
+
 function justLocalPart(username: string) {
   return username.split("@")[1].split(":")[0];
 }
@@ -130,12 +132,15 @@ function App() {
     }
   }
 
-  async function loadEvents() {
-    const events = await getEvents();
-    setTimeline(events.chunk);
-    if (events.end) {
-      const nextEvents = await getEvents(events.end);
-      setTimeline(events.chunk.concat(nextEvents.chunk));
+  async function loadEvents(
+    from: string = timelineStart,
+    prevEvents: matrixEvent[] = []
+  ) {
+    const newEvents = await getEvents(from);
+    const events = prevEvents.concat(newEvents.chunk);
+    setTimeline(events);
+    if (newEvents.end) {
+      loadEvents(newEvents.end, events);
     }
   }
 
