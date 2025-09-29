@@ -2,9 +2,9 @@ import { type newVenue, type newEvent, VENUE_EVENT, EVENT_EVENT, EVENT_UPDATED_E
 
 const { VITE_MATRIX_TOKEN, VITE_HOMESERVER, VITE_ROOM_ID, VITE_REGISTRATION_TOKEN } = import.meta.env;
 
-export const getEvents = async () => {
+export const getEvents = async (from: string = "s0_0_0_0_0_0_0_0_0_0") => {
     const eventsResponse = await fetch(
-        `${VITE_HOMESERVER}/_matrix/client/v3/rooms/${VITE_ROOM_ID}/messages?limit=10000&dir=f`,
+        `${VITE_HOMESERVER}/_matrix/client/v3/rooms/${VITE_ROOM_ID}/messages?limit=10000&dir=f&from=${from}`,
         {
             method: "GET",
             headers: {

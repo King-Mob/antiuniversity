@@ -76,6 +76,9 @@ function prepareEvents(
 ) {
   let events: event[] = [];
 
+  console.log(timeline[0], timeline[1], timeline[2]);
+  console.log(timeline.length);
+
   timeline.forEach((matrixEvent) => {
     if (matrixEvent.type === EVENT_EVENT && matrixEvent.content.name) {
       events.push({
@@ -130,6 +133,10 @@ function App() {
   async function loadEvents() {
     const events = await getEvents();
     setTimeline(events.chunk);
+    if (events.end) {
+      const nextEvents = await getEvents(events.end);
+      setTimeline(events.chunk.concat(nextEvents.chunk));
+    }
   }
 
   useEffect(() => {
