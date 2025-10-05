@@ -16,6 +16,7 @@ import About from "./About.tsx";
 import Contact from "./Contact.tsx";
 import Instructions from "./Instructions.tsx";
 import Venues from "./Venues.tsx";
+import List from "./List.tsx";
 import { getEvents } from "./requests.ts";
 import {
   VENUE_EVENT,
@@ -77,9 +78,6 @@ function prepareEvents(
   isAdmin: boolean
 ) {
   let events: event[] = [];
-
-  console.log(timeline[0], timeline[1], timeline[2]);
-  console.log(timeline.length);
 
   timeline.forEach((matrixEvent) => {
     if (matrixEvent.type === EVENT_EVENT && matrixEvent.content.name) {
@@ -240,6 +238,7 @@ function App() {
           />
         </Route>
         <Route path="/user/:id" element={<User events={events} />} />
+        <Route path="list" element={<List events={events} venues={venues} />} />
         <Route path="about" element={<About />} />
         <Route path="contact" element={<Contact />} />
         <Route

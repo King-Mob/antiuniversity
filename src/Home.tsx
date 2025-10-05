@@ -5,7 +5,7 @@ import { type venue, type event, type user, type day } from "./types";
 import { getImage } from "./requests";
 import { breakIntoDays, formatTime } from "./Event";
 
-function Event({ event, venues }: { event: event; venues: venue[] }) {
+export function Event({ event, venues }: { event: event; venues: venue[] }) {
   const [imageSrc, setImageSrc] = useState("");
 
   async function loadImage() {
