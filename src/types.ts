@@ -30,6 +30,7 @@ export type newEvent = {
 
 export type event = newEvent & {
     id: string;
+    old_event_id?: string;
 };
 
 export type matrixEvent = {
@@ -37,6 +38,7 @@ export type matrixEvent = {
     event_id: string;
     content: any;
     sender: string;
+    redactedBecause?: any;
 };
 
 export type user = {

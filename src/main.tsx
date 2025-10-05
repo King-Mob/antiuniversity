@@ -72,6 +72,45 @@ function prepareVenues(timeline: matrixEvent[]) {
   return venues;
 }
 
+function prepareDeletedEvents(timeline: matrixEvent[]) {
+  let deletedEvents: event[] = [];
+
+  timeline.forEach((matrixEvent) => {
+    if (matrixEvent.type === EVENT_UPDATED_EVENT) {
+      const oldEvent = timeline.find(
+        (event) => event.event_id === matrixEvent.content.old_event_id
+      );
+
+      if (oldEvent && !oldEvent.content.name) {
+        const existingDeletedEventIndex = deletedEvents.findIndex(
+          (event) => event.old_event_id === matrixEvent.content.old_event_id
+        );
+
+        if (existingDeletedEventIndex > -1) {
+          deletedEvents = deletedEvents
+            .slice(0, existingDeletedEventIndex)
+            .concat([
+              {
+                ...matrixEvent.content,
+                slotsUsed: matrixEvent.content.slotsUsed.sort(),
+                id: matrixEvent.content.old_event_id,
+                creator: oldEvent.sender,
+              },
+            ])
+            .concat(deletedEvents.slice(existingDeletedEventIndex + 1));
+        } else {
+          deletedEvents.push({
+            ...matrixEvent.content,
+          });
+          console.log("old event deleted", oldEvent, matrixEvent);
+        }
+      }
+    }
+  });
+
+  return deletedEvents;
+}
+
 function prepareEvents(
   timeline: matrixEvent[],
   user: user | undefined,
@@ -150,6 +189,7 @@ function App() {
   const venues = prepareVenues(timeline);
   const events = prepareEvents(timeline, user, isAdmin);
   const draftEvents = prepareEvents(timeline, user, true);
+  const deletedEvents = prepareDeletedEvents(timeline);
 
   return (
     <BrowserRouter>
@@ -238,7 +278,16 @@ function App() {
           />
         </Route>
         <Route path="/user/:id" element={<User events={events} />} />
-        <Route path="list" element={<List events={events} venues={venues} />} />
+        <Route
+          path="list"
+          element={
+            <List
+              events={events}
+              deletedEvents={deletedEvents}
+              venues={venues}
+            />
+          }
+        />
         <Route path="about" element={<About />} />
         <Route path="contact" element={<Contact />} />
         <Route
