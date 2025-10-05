@@ -102,7 +102,6 @@ function prepareDeletedEvents(timeline: matrixEvent[]) {
           deletedEvents.push({
             ...matrixEvent.content,
           });
-          console.log("old event deleted", oldEvent, matrixEvent);
         }
       }
     }
